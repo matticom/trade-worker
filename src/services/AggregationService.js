@@ -1,7 +1,11 @@
 import _ from 'lodash';
+import { roundTo } from 'round-to';
 import cron from 'cron';
 import { assetHistoryModels } from '../db/ModelService';
 import { observedValues } from '../ObservedValues';
+import { db } from '../db/mongoDb';
+import moment from 'moment';
+import { HOUR_RETENTION_IN_DAYS, MINUTE_RETENTION_IN_DAYS } from '../constants';
 
 async function aggregateLastHour(collection) {
    const { MinuteModel, HourModel } = assetHistoryModels.get(collection);
@@ -14,9 +18,12 @@ async function aggregateLastHour(collection) {
          $lt: startCurrentHour.toDate(), // -> autom. converted to UTC for DB query (where date is utc)
       },
    });
-   const avgValue = _.meanBy(quotes, (q) => q.price);
-   const newValue = new HourModel({ price: avgValue, date: startLastHour.toDate() });
-   newValue.save();
+
+   if (quotes.length > 0) {
+      const avgValue = _.meanBy(quotes, (q) => q.price);
+      const newValue = new HourModel({ price: roundTo(avgValue, 1), date: startLastHour.toDate() });
+      await newValue.save();
+   }
 }
 
 async function aggregateLastDay(collection) {
@@ -30,9 +37,12 @@ async function aggregateLastDay(collection) {
          $lt: startCurrentDay.toDate(),
       },
    });
-   const avgValue = _.meanBy(quotes, (q) => q.price);
-   const newValue = new DayModel({ price: avgValue, date: startLastDay.toDate() });
-   newValue.save();
+
+   if (quotes.length > 0) {
+      const avgValue = _.meanBy(quotes, (q) => q.price);
+      const newValue = new DayModel({ price: roundTo(avgValue, 1), date: startLastDay.toDate() });
+      await newValue.save();
+   }
 }
 
 async function deleteOldMinutes(collection) {
@@ -42,7 +52,7 @@ async function deleteOldMinutes(collection) {
 
 async function deleteOldHours(collection) {
    const lastRetainDate = moment().startOf('day').subtract(HOUR_RETENTION_IN_DAYS, 'days');
-   await db.collection(`collection_${hour}`).deleteMany({ date: { $lt: lastRetainDate.toDate() } });
+   await db.collection(`${collection}_${hour}`).deleteMany({ date: { $lt: lastRetainDate.toDate() } });
 }
 
 export async function startAggregationService() {
@@ -59,7 +69,7 @@ export async function startAggregationService() {
       }
    });
 
-   // starts every new day 5 minutes after midnight
+   // starts every new hour 5 minutes after midnight
    const hourlyJob = new cron.CronJob(`5 * * * *`, async () => {
       try {
          for (let index = 0; index < observedValues.length; index++) {
