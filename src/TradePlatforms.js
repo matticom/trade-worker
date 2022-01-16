@@ -1,9 +1,9 @@
-export const BITCOIN_LIVE = 'BITCOIN_LIVE';
+export const CRYPTOWAT_CH = 'CRYPTOWAT_CH';
 export const LANG_SCHWARZ = 'LANG_SCHWARZ';
 export const TRADEGATE = 'TRADEGATE';
 
 export const tradingPlatforms = {
-   [BITCOIN_LIVE]: {
+   [CRYPTOWAT_CH]: {
       tradeWeekend: true,
       tradeAnyTime: true,
    },

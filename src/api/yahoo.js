@@ -25,17 +25,12 @@ export async function getHistoricalData(symbol = 'EL4C.DE', region = 'DE') {
       },
    };
 
-   // const res = await axios.request(options);
+   const res = await axios.request(options);
 
-   // if (res.error) throw new Error(res.error);
-   // const data = res.data;
-   // const quotes = data.prices;
-   // quotes.reverse();
-   // const modelData = quotes.map((quote) => ({
-   //    price: quote.close,
-   //    date: moment.unix(quote.date).utc().startOf('day').toDate(),
-   // }));
-   // const deka_growth_20 = Mongoose.model('blub', ChartHistorySchema);
+   if (res.error) throw new Error(res.error);
+   const data = res.data;
+   const quotes = data.prices;
+   return quotes.reverse();
 }
 
 export async function findAsset(searchTerm = 'EL4C.DE', region = 'DE') {
@@ -59,7 +54,6 @@ export async function findAsset(searchTerm = 'EL4C.DE', region = 'DE') {
          ...prices[idx],
       };
    });
-   console.log('result :>> ', result);
    return result;
 }
 

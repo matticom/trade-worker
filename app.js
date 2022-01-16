@@ -28,6 +28,9 @@ import {
    test,
 } from './src/services/ScrapeService';
 import { observedValues } from './src/ObservedValues';
+import { processHistoricalData } from './src/services/HistoricalDataService';
+import { createInitialModels } from './src/db/ModelService';
+import { startAggregationService } from './src/services/AggregationService';
 
 const port = process.env.PORT || 8200;
 const app = express();
@@ -77,38 +80,24 @@ db.once('open', function () {
 // findAsset('volkswagen');
 // getPageHTML();
 
+for (let index = 0; index < observedValues.length; index++) {
+   const { name, currency, collection } = observedValues[index];
+   createInitialModels(name, currency, collection);
+}
+
+startAggregationService();
+
+// Observation JOBS
+// ----------------
+
 startObservationJob();
 
 monitoringObservationHealth();
 
-// setInterval(() => {
-//    let hasObserveIssues = false;
-//    Object.keys(activePages).forEach((pageKey) => {
-//       if (!activePages[pageKey].active) {
-//          hasObserveIssues = true;
-//       }
-//    });
-//    if (hasObserveIssues) {
-//       console.log(
-//          'activePages :>> ',
-//          Object.keys(activePages).map((url) => ({
-//             ...activePages[url],
-//             intervalId: activePages[url].intervalId !== null,
-//             emitter: activePages[url].emitter !== null,
-//          })),
-//       );
-//    }
+// Finding new assets and filling DB with history data
+// ---------------------------------------------------
 
-//    for (let index = 0; index < models.length; index++) {
-//       const { model, name } = models[index];
-
-//    }
-
-//    // console.log('ipIsBeingChanged :>> ', ipIsBeingChanged);
-
-// }, 12000);
-
-// test();
+processHistoricalData();
 
 // findAssetBySymbol('BTC').then((res) => console.log('res :>> ', res));
 

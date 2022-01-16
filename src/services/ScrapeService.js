@@ -1,8 +1,13 @@
 import { sleep } from '../tools/General';
 import moment from 'moment';
 import { observedValues } from '../ObservedValues';
-import { DE_FORMAT, US_FORMAT } from '../constants';
-import { createInitialModels } from '../db/ModelService';
+import {
+   ASSET_POLLING_FUZZY_LENGTH_MSEC,
+   ASSET_POLLING_INTERVAL_LENGTH_MSEC,
+   DE_FORMAT,
+   US_FORMAT,
+} from '../constants';
+import { assetHistoryModels, createInitialModels } from '../db/ModelService';
 import { tradingPlatforms } from '../TradePlatforms';
 
 const valueRegex = /[^0-9]*([0-9,.]*)[^0-9]*/;
@@ -73,7 +78,9 @@ export async function startBrowser(proxyIP, proxyPort) {
    if (proxyIP !== undefined) {
       browser = await puppeteer.launch({ args: [`--proxy-server=${proxyIP}:${proxyPort}`] });
    } else {
-      browser = await puppeteer.launch();
+      browser = await puppeteer.launch({
+         dumpio: false,
+      });
    }
 }
 
@@ -115,13 +122,15 @@ export async function startPageObservation(url, selector, platform, dbStoreFn) {
       page.setExtraHTTPHeaders(httpHeader);
       // console.log((await page.goto('https://example.org/')).request().headers());
       await page.goto(url);
+      const elementHandle = await page.$(selector);
+
       activePages[url] = { emitter, price: 0, intervalId: null, selector, url, active: true };
       emitter.addListener('refresh', async () => {
          try {
             if (shouldAskForPrice(platform)) {
                console.log(`new fetch for ${url} :>> `, moment().format('HH:mm:ss SSS'));
-
-               const unformatedPrice = await page.$eval(selector, (el) => el.innerHTML);
+               // await page.reload();
+               const unformatedPrice = await page.evaluate((selected) => selected.innerText, elementHandle);
                const foundValue = unformatedPrice.match(valueRegex);
                const price = foundValue[1];
                const date = moment().toDate();
@@ -144,9 +153,9 @@ export async function startPageObservation(url, selector, platform, dbStoreFn) {
          }
       });
       activePages[url].intervalId = setInterval(async () => {
-         await sleep(Math.random() * 2000);
+         await sleep(Math.random() * ASSET_POLLING_FUZZY_LENGTH_MSEC);
          emitter.emit('refresh');
-      }, 8000);
+      }, ASSET_POLLING_INTERVAL_LENGTH_MSEC);
    } catch (error) {
       console.log('another error :>> ', error);
    }
@@ -192,7 +201,7 @@ export async function startObservationJob() {
 
    for (let index = 0; index < observedValues.length; index++) {
       const { name, currency, collection, url, selector, separatorChar, platform } = observedValues[index];
-      const minuteModel = createInitialModels(name, currency, collection);
+      const minuteModel = assetHistoryModels.get(collection).MinuteModel;
 
       console.log(`start observation of : ${url} (${name}_${currency})`);
       await startPageObservation(url, selector, platform, (price, date) => {
@@ -201,7 +210,7 @@ export async function startObservationJob() {
             formatedPrice = formatedPrice.replace(US_FORMAT, DE_FORMAT);
          }
          // console.log('price :>> ', formatedPrice);
-         const newValue = new minuteModel({ price: formatedPrice, date });
+         const newValue = new minuteModel({ price: Number.parseFloat(formatedPrice), date });
          newValue.save();
       });
       await sleep(2000);
@@ -211,13 +220,13 @@ export async function startObservationJob() {
 export async function monitoringObservationHealth() {
    try {
       setInterval(() => {
-         let hasObserveIssues = false;
+         let hasObservationIssues = false;
          Object.keys(activePages).forEach((pageKey) => {
             if (!activePages[pageKey].active) {
-               hasObserveIssues = true;
+               hasObservationIssues = true;
             }
          });
-         if (hasObserveIssues) {
+         if (hasObservationIssues) {
             console.log(
                'activePages :>> ',
                Object.keys(activePages).map((url) => ({
@@ -357,13 +366,13 @@ export async function test() {
       setInterval(() => {
          console.log('Price Gold:>> ', activePages['https://www.ls-tc.de/de/etf/52412'].price);
          console.log('Price Grth20:>> ', activePages['https://www.tradegate.de/orderbuch.php?isin=DE000ETFL037'].price);
-         let hasObserveIssues = false;
+         let hasObservationIssues = false;
          Object.keys(activePages).forEach((pageKey) => {
             if (!activePages[pageKey].active) {
-               hasObserveIssues = true;
+               hasObservationIssues = true;
             }
          });
-         if (hasObserveIssues) {
+         if (hasObservationIssues) {
             console.log(
                'activePages :>> ',
                Object.keys(activePages).map((url) => ({

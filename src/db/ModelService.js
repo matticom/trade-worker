@@ -12,5 +12,5 @@ export function createInitialModels(name, currency, collection) {
    const HourModel = Mongoose.model(`${collection}_hour`, ChartHistorySchema, `${collection}_hour`);
    const DayModel = Mongoose.model(`${collection}_day`, ChartHistorySchema, `${collection}_day`);
    assetHistoryModels.set(collection, { name, currency, collection, MinuteModel, HourModel, DayModel });
-   return MinuteModel;
+   // return MinuteModel;
 }

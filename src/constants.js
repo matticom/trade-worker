@@ -21,6 +21,9 @@ export const RECENTLY_TIME_SPAN_DAYS = 3; //20;
 
 // oberservation for potencial invests: V curves --> loss drop, start of increase
 
+export const ASSET_POLLING_INTERVAL_LENGTH_MSEC = 10000; //50 * 1000;
+export const ASSET_POLLING_FUZZY_LENGTH_MSEC = 2000; //10 * 1000;
+
 // currencies
 
 export const EUR = 'EUR';

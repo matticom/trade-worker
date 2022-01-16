@@ -21,6 +21,6 @@ export const AssetSchema = new Mongoose.Schema({
 
 // name = collection
 export const ChartHistorySchema = new Mongoose.Schema({
-   price: { type: String, required: true },
+   price: { type: Number, required: true },
    date: { type: Date, required: true },
 });
