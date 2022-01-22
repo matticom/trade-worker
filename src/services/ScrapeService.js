@@ -210,7 +210,7 @@ export async function startObservationJob() {
             formatedPrice = formatedPrice.replace(US_FORMAT, DE_FORMAT);
          }
          // console.log('price :>> ', formatedPrice);
-         const newValue = new minuteModel({ price: Number.parseFloat(formatedPrice), date });
+         const newValue = new minuteModel({ value: Number.parseFloat(formatedPrice), date });
          newValue.save();
       });
       await sleep(2000);

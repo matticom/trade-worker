@@ -37,3 +37,13 @@ export const DE_FORMAT = '.';
 
 export const MINUTE_RETENTION_IN_DAYS = 3;
 export const HOUR_RETENTION_IN_DAYS = 30;
+
+// detection
+export const PEAK_PERCENT = 10;
+export const PLATEAU_MIN_LENGTH = 5;
+export const PLATEAU_TOLERANCE_PERCENT = 3;
+
+// collection
+
+export const HOUR_COLLECTION_POSTFIX = '_hour';
+export const DAY_COLLECTION_POSTFIX = '_day';

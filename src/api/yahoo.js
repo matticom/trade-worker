@@ -57,6 +57,7 @@ export async function findAsset(searchTerm = 'EL4C.DE', region = 'DE') {
    return result;
 }
 
+// just for finding right symbol
 export async function getLastPrice(symbols, region = 'DE') {
    const options = {
       method: 'GET',

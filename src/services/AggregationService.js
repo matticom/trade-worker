@@ -5,7 +5,7 @@ import { assetHistoryModels } from '../db/ModelService';
 import { observedValues } from '../ObservedValues';
 import { db } from '../db/mongoDb';
 import moment from 'moment';
-import { HOUR_RETENTION_IN_DAYS, MINUTE_RETENTION_IN_DAYS } from '../constants';
+import { HOUR_COLLECTION_POSTFIX, HOUR_RETENTION_IN_DAYS, MINUTE_RETENTION_IN_DAYS } from '../constants';
 
 async function aggregateLastHour(collection) {
    const { MinuteModel, HourModel } = assetHistoryModels.get(collection);
@@ -20,8 +20,8 @@ async function aggregateLastHour(collection) {
    });
 
    if (quotes.length > 0) {
-      const avgValue = _.meanBy(quotes, (q) => q.price);
-      const newValue = new HourModel({ price: roundTo(avgValue, 1), date: startLastHour.toDate() });
+      const avgValue = _.meanBy(quotes, (q) => q.value);
+      const newValue = new HourModel({ value: roundTo(avgValue, 1), date: startLastHour.toDate() });
       await newValue.save();
    }
 }
@@ -39,8 +39,8 @@ async function aggregateLastDay(collection) {
    });
 
    if (quotes.length > 0) {
-      const avgValue = _.meanBy(quotes, (q) => q.price);
-      const newValue = new DayModel({ price: roundTo(avgValue, 1), date: startLastDay.toDate() });
+      const avgValue = _.meanBy(quotes, (q) => q.value);
+      const newValue = new DayModel({ value: roundTo(avgValue, 1), date: startLastDay.toDate() });
       await newValue.save();
    }
 }
@@ -52,7 +52,9 @@ async function deleteOldMinutes(collection) {
 
 async function deleteOldHours(collection) {
    const lastRetainDate = moment().startOf('day').subtract(HOUR_RETENTION_IN_DAYS, 'days');
-   await db.collection(`${collection}_${hour}`).deleteMany({ date: { $lt: lastRetainDate.toDate() } });
+   await db
+      .collection(`${collection}${HOUR_COLLECTION_POSTFIX}`)
+      .deleteMany({ date: { $lt: lastRetainDate.toDate() } });
 }
 
 export async function startAggregationService() {

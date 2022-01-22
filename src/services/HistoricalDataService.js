@@ -1,10 +1,11 @@
 import moment from 'moment';
+import { DAY_COLLECTION_POSTFIX } from '../constants';
 import { assetHistoryModels } from '../db/ModelService';
 import { db } from '../db/mongoDb';
 
 const { findAsset, getHistoricalData } = require('../api/yahoo');
 
-export async function processHistoricalData(searchTerm = 'gold', collectionName = 'gold_EUR_day') {
+export async function processHistoricalData(searchTerm = 'gold', collectionName = 'gold_EUR') {
    const result = await findAsset(searchTerm);
    //    console.log('result :>> ', result);
    // choose symbol
@@ -20,11 +21,11 @@ export async function processHistoricalData(searchTerm = 'gold', collectionName 
    // console.log('quotes[l-2] :>> ', moment.unix(quotes[quotes.length - 3].date).format());
 
    let newDocuments = quotes.map((quote) => ({
-      price: quote.close,
+      value: quote.close,
       date: moment.unix(quote.date).startOf('day').toDate(),
    }));
 
-   const goldDayModel = assetHistoryModels.get('gold_EUR').DayModel;
+   const goldDayModel = assetHistoryModels.get(collectionName).DayModel;
 
    const latestDocArray = await goldDayModel.find().sort({ date: -1 }).limit(1);
    if (latestDocArray.length !== 0) {
@@ -33,6 +34,6 @@ export async function processHistoricalData(searchTerm = 'gold', collectionName 
    }
 
    if (newDocuments.length > 0) {
-      await db.collection(collectionName).insertMany(newDocuments);
+      await db.collection(`${collectionName}${DAY_COLLECTION_POSTFIX}`).insertMany(newDocuments);
    }
 }
