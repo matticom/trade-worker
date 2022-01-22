@@ -32,6 +32,9 @@ import { processHistoricalData } from './src/services/HistoricalDataService';
 import { createInitialModels } from './src/db/ModelService';
 import { startAggregationService } from './src/services/AggregationService';
 
+import { sendEmail } from './src/services/EmailNotification';
+import moment from 'moment';
+
 const port = process.env.PORT || 8200;
 const app = express();
 
@@ -80,24 +83,33 @@ db.once('open', function () {
 // findAsset('volkswagen');
 // getPageHTML();
 
+// sendEmail('Test subject', 'Test text');
+
+// const sourceData = require('./data/LongHistoryBTC.json');
+
+// const start = moment('2017-08-08').unix();
+// const end = moment('2018-01-09').unix();
+
+// const rawData = sourceData.filter((data) => data.date >= start && data.date <= end);
+
 for (let index = 0; index < observedValues.length; index++) {
    const { name, currency, collection } = observedValues[index];
    createInitialModels(name, currency, collection);
 }
 
-startAggregationService();
+// startAggregationService();
 
 // Observation JOBS
 // ----------------
 
-startObservationJob();
+// startObservationJob();
 
-monitoringObservationHealth();
+// monitoringObservationHealth();
 
 // Finding new assets and filling DB with history data
 // ---------------------------------------------------
 
-processHistoricalData();
+// processHistoricalData();
 
 // findAssetBySymbol('BTC').then((res) => console.log('res :>> ', res));
 
