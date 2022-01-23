@@ -61,7 +61,7 @@ export function staticPercentThresholds(data, thresholdArray) {
             if (threshold > reachedPositiveThresholds) {
                const entry = {
                   threshold,
-                  type: 'positive',
+                  type: 'threshold',
                   dateStr: moment.unix(date).format('YYYY-MM-DD'),
                   date,
                   value,
@@ -80,8 +80,8 @@ export function staticPercentThresholds(data, thresholdArray) {
             if (threshold > reachedNegativeThresholds) {
                // console.log('less than last threshold :>> ');
                const entry = {
-                  threshold,
-                  type: 'negative',
+                  threshold: threshold * -1,
+                  type: 'threshold',
                   dateStr: moment.unix(date).format('YYYY-MM-DD'),
                   date,
                   value,

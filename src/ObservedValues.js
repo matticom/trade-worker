@@ -1,9 +1,10 @@
-import { DE_FORMAT, EUR, USD, US_FORMAT } from './constants';
+import { DE_FORMAT, EUR, USD, EN_FORMAT } from './constants';
 import { CRYPTOWAT_CH, LANG_SCHWARZ, TRADEGATE } from './TradePlatforms';
 
 export const observedValues = [
    {
-      name: 'bitcoin',
+      name: 'Bitcoin',
+      symbol: 'BTC',
       currency: USD,
       collection: `bitcoin_${USD}`,
       url: 'https://cryptowat.ch/de/markets?exchanges=coinbase-pro&types=spot%2Bfutures',
@@ -13,7 +14,8 @@ export const observedValues = [
       platform: CRYPTOWAT_CH,
    },
    {
-      name: 'gold',
+      name: 'Gold',
+      symbol: 'GOLD',
       currency: EUR,
       collection: `gold_${EUR}`,
       url: 'https://www.ls-tc.de/de/etf/52412',
@@ -22,13 +24,14 @@ export const observedValues = [
       separatorChar: DE_FORMAT,
       platform: LANG_SCHWARZ,
    },
-   // {
-   //    name: 'deka_growth_20',
-   //    currency: EUR,
-   //    collection: `deka_growth_20${EUR}`,
-   //    url: 'https://www.tradegate.de/orderbuch.php?isin=DE000ETFL037',
-   //    selector: '#last',
-   //    separatorChar: DE_FORMAT,
-   //    platform: TRADEGATE,
-   // },
+   {
+      name: 'Deka STOXX Europe Strong Growth 20 UCITS ETF',
+      symbol: 'EL4C.DE',
+      currency: EUR,
+      collection: `deka_growth_20${EUR}`,
+      url: 'https://www.tradegate.de/orderbuch.php?isin=DE000ETFL037',
+      selector: '#last',
+      separatorChar: DE_FORMAT,
+      platform: TRADEGATE,
+   },
 ];

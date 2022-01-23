@@ -1,7 +1,5 @@
 import axios from 'axios';
 import moment from 'moment-timezone';
-import Mongoose from 'mongoose';
-import { ChartHistorySchema } from '../db/schemas';
 
 const credentials = {
    matticom: {
@@ -14,11 +12,20 @@ const credentials = {
    },
 };
 
-export async function getHistoricalData(symbol = 'EL4C.DE', region = 'DE') {
+// use stock/v3/get-chart
+export async function getHistoricalData(symbol = 'EL4C.DE', region = 'DE', range = '5y') {
    const options = {
       method: 'GET',
-      url: 'https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v3/get-historical-data',
-      params: { symbol, region },
+      url: 'https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v3/get-chart',
+      params: {
+         interval: '1d',
+         symbol,
+         range,
+         region,
+         includePrePost: 'false',
+         useYfid: 'true',
+         includeAdjustedClose: 'false',
+      },
       headers: {
          'x-rapidapi-host': credentials.matticom.host,
          'x-rapidapi-key': credentials.matticom.key,
@@ -29,8 +36,16 @@ export async function getHistoricalData(symbol = 'EL4C.DE', region = 'DE') {
 
    if (res.error) throw new Error(res.error);
    const data = res.data;
-   const quotes = data.prices;
-   return quotes.reverse();
+   const result = data.chart.result;
+   if (result.length === 0) return [];
+
+   const quotes = [];
+   for (let index = 0; index < result[0].timestamp.length; index++) {
+      const date = result[0].timestamp[index];
+      const price = result[0].indicators.quote[0].close[index];
+      quotes.push({ date, price });
+   }
+   return quotes;
 }
 
 export async function findAsset(searchTerm = 'EL4C.DE', region = 'DE') {

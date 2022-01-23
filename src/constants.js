@@ -30,7 +30,7 @@ export const EUR = 'EUR';
 export const USD = 'USD';
 export const BTC = 'BTC';
 
-export const US_FORMAT = ',';
+export const EN_FORMAT = ',';
 export const DE_FORMAT = '.';
 
 // retentions
@@ -43,7 +43,14 @@ export const PEAK_PERCENT = 10;
 export const PLATEAU_MIN_LENGTH = 5;
 export const PLATEAU_TOLERANCE_PERCENT = 3;
 
-// collection
+// collection names
 
-export const HOUR_COLLECTION_POSTFIX = '_hour';
-export const DAY_COLLECTION_POSTFIX = '_day';
+//
+
+export const TIME_AGG_LEVEL = {
+   MINUTE: 'minute',
+   HOUR: 'hour',
+   DAY: 'day',
+};
+
+export const POSTFIX_MODEL_MAP = {};

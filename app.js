@@ -15,7 +15,7 @@ import http from 'http';
 import CommunicationService from './src/services/CommunicationService';
 import TestRouter from './src/routes/TestRouter';
 import { db, getCollections } from './src/db/mongoDb';
-import { Trade, Profile, Asset, deka_growth_20, ChartHistorySchema } from './src/db/schemas';
+import { Trade, Profile, Asset, deka_growth_20, ChartDataPointSchema } from './src/db/schemas';
 import { findAsset, getHistoricalData } from './src/api/yahoo';
 import Mongoose from 'mongoose';
 import { createAsset, findAssetBySymbol } from './src/db/queries';
@@ -29,7 +29,7 @@ import {
 } from './src/services/ScrapeService';
 import { observedValues } from './src/ObservedValues';
 import { processHistoricalData } from './src/services/HistoricalDataService';
-import { createInitialModels } from './src/db/ModelService';
+import { createInitialDbSetup, createInitialModelsAndData } from './src/db/ModelService';
 import { startAggregationService } from './src/services/AggregationService';
 
 import { sendEmail } from './src/services/EmailNotification';
@@ -53,6 +53,11 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
    console.log('Connected to MongoDB');
 });
+
+// -----------------------------------------------------------
+// to be checked out: https://www.npmjs.com/package/iex-cloud
+// -----------------------------------------------------------
+
 // const matti = new Profile({ name: 'Matti' });
 // matti.save();
 // const bitcoin = new Asset({ name: 'Bitcoin' });
@@ -92,19 +97,16 @@ db.once('open', function () {
 
 // const rawData = sourceData.filter((data) => data.date >= start && data.date <= end);
 
-for (let index = 0; index < observedValues.length; index++) {
-   const { name, currency, collection } = observedValues[index];
-   createInitialModels(name, currency, collection);
-}
+createInitialDbSetup(observedValues);
 
-// startAggregationService();
+startAggregationService();
 
 // Observation JOBS
 // ----------------
 
-// startObservationJob();
+startObservationJob();
 
-// monitoringObservationHealth();
+monitoringObservationHealth();
 
 // Finding new assets and filling DB with history data
 // ---------------------------------------------------
@@ -128,7 +130,7 @@ for (let index = 0; index < observedValues.length; index++) {
 //    //    newDoc.save();
 //    // });
 
-//    const deka_growth_20 = Mongoose.model('bla', ChartHistorySchema);
+//    const deka_growth_20 = Mongoose.model('bla', ChartDataPointSchema);
 
 //    deka_growth_20
 //       .insertMany(historicalData)

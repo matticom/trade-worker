@@ -1,18 +1,20 @@
 import _ from 'lodash';
-import { roundTo } from 'round-to';
+import roundTo from 'round-to';
 import cron from 'cron';
-import { assetHistoryModels } from '../db/ModelService';
 import { observedValues } from '../ObservedValues';
 import { db } from '../db/mongoDb';
 import moment from 'moment';
-import { HOUR_COLLECTION_POSTFIX, HOUR_RETENTION_IN_DAYS, MINUTE_RETENTION_IN_DAYS } from '../constants';
+import { HOUR_TIME_AGG_LEVEL, HOUR_RETENTION_IN_DAYS, MINUTE_RETENTION_IN_DAYS, TIME_AGG_LEVEL } from '../constants';
+import { getAssetChartName, getChartDataPointCollection, getChartDataPointName } from '../db/ModelService';
 
-async function aggregateLastHour(collection) {
-   const { MinuteModel, HourModel } = assetHistoryModels.get(collection);
+async function aggregateLastHour(assetChartName) {
+   const MinuteCollection = getChartDataPointCollection(assetChartName, TIME_AGG_LEVEL.MINUTE);
+   const HourCollection = getChartDataPointCollection(assetChartName, TIME_AGG_LEVEL.HOUR);
+
    const startLastHour = moment().subtract(1, 'hour').startOf('hour');
    const startCurrentHour = moment().startOf('hour');
 
-   const quotes = await MinuteModel.find({
+   const quotes = await MinuteCollection.find({
       date: {
          $gte: startLastHour.toDate(), // date is local time
          $lt: startCurrentHour.toDate(), // -> autom. converted to UTC for DB query (where date is utc)
@@ -21,17 +23,19 @@ async function aggregateLastHour(collection) {
 
    if (quotes.length > 0) {
       const avgValue = _.meanBy(quotes, (q) => q.value);
-      const newValue = new HourModel({ value: roundTo(avgValue, 1), date: startLastHour.toDate() });
+      const newValue = new HourCollection({ value: roundTo(avgValue, 1), date: startLastHour.toDate() });
       await newValue.save();
    }
 }
 
-async function aggregateLastDay(collection) {
-   const { HourModel, DayModel } = assetHistoryModels.get(collection);
+async function aggregateLastDay(assetChartName) {
+   const HourCollection = getChartDataPointCollection(assetChartName, TIME_AGG_LEVEL.HOUR);
+   const DayCollection = getChartDataPointCollection(assetChartName, TIME_AGG_LEVEL.DAY);
+
    const startLastDay = moment().subtract(1, 'day').startOf('day');
    const startCurrentDay = moment().startOf('day');
 
-   const quotes = await HourModel.find({
+   const quotes = await HourCollection.find({
       date: {
          $gte: startLastDay.toDate(),
          $lt: startCurrentDay.toDate(),
@@ -40,20 +44,22 @@ async function aggregateLastDay(collection) {
 
    if (quotes.length > 0) {
       const avgValue = _.meanBy(quotes, (q) => q.value);
-      const newValue = new DayModel({ value: roundTo(avgValue, 1), date: startLastDay.toDate() });
+      const newValue = new DayCollection({ value: roundTo(avgValue, 1), date: startLastDay.toDate() });
       await newValue.save();
    }
 }
 
-async function deleteOldMinutes(collection) {
+async function deleteOldMinutes(assetChartName) {
    const lastRetainDate = moment().startOf('hour').subtract(MINUTE_RETENTION_IN_DAYS, 'days');
-   await db.collection(collection).deleteMany({ date: { $lt: lastRetainDate.toDate() } });
+   await db
+      .collection(getChartDataPointName(assetChartName, TIME_AGG_LEVEL.MINUTE))
+      .deleteMany({ date: { $lt: lastRetainDate.toDate() } });
 }
 
-async function deleteOldHours(collection) {
+async function deleteOldHours(assetChartName) {
    const lastRetainDate = moment().startOf('day').subtract(HOUR_RETENTION_IN_DAYS, 'days');
    await db
-      .collection(`${collection}${HOUR_COLLECTION_POSTFIX}`)
+      .collection(getChartDataPointName(assetChartName, TIME_AGG_LEVEL.HOUR))
       .deleteMany({ date: { $lt: lastRetainDate.toDate() } });
 }
 
@@ -62,9 +68,10 @@ export async function startAggregationService() {
    const dailyJob = new cron.CronJob(`30 00 * * *`, async () => {
       try {
          for (let index = 0; index < observedValues.length; index++) {
-            const { collection } = observedValues[index];
-            await aggregateLastDay(collection);
-            await deleteOldHours(collection);
+            const { name, symbol, currency } = observedValues[index];
+            const assetChartName = getAssetChartName(name, symbol, currency);
+            await aggregateLastDay(assetChartName);
+            await deleteOldHours(assetChartName);
          }
       } catch (e) {
          console.log('Something went wrong at daily aggregation: ' + e);
@@ -75,9 +82,10 @@ export async function startAggregationService() {
    const hourlyJob = new cron.CronJob(`5 * * * *`, async () => {
       try {
          for (let index = 0; index < observedValues.length; index++) {
-            const { collection } = observedValues[index];
-            await aggregateLastHour(collection);
-            await deleteOldMinutes(collection);
+            const { name, symbol, currency } = observedValues[index];
+            const assetChartName = getAssetChartName(name, symbol, currency);
+            await aggregateLastHour(assetChartName);
+            await deleteOldMinutes(assetChartName);
          }
       } catch (e) {
          console.log('Something went wrong at hourly aggregation: ' + e);

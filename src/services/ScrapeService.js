@@ -5,9 +5,10 @@ import {
    ASSET_POLLING_FUZZY_LENGTH_MSEC,
    ASSET_POLLING_INTERVAL_LENGTH_MSEC,
    DE_FORMAT,
-   US_FORMAT,
+   EN_FORMAT,
+   TIME_AGG_LEVEL,
 } from '../constants';
-import { assetHistoryModels, createInitialModels } from '../db/ModelService';
+import { getAssetChartName, getChartDataPointCollection } from '../db/ModelService';
 import { tradingPlatforms } from '../TradePlatforms';
 
 const valueRegex = /[^0-9]*([0-9,.]*)[^0-9]*/;
@@ -196,23 +197,28 @@ function shouldAskForPrice(platform) {
    }
 }
 
+function storeNewPriceInDb(MinuteCollection, separatorChar) {
+   return (price, date) => {
+      let formatedPrice = price.replace(separatorChar, '');
+      if (separatorChar === DE_FORMAT) {
+         formatedPrice = formatedPrice.replace(EN_FORMAT, DE_FORMAT);
+      }
+      // console.log('price :>> ', formatedPrice);
+      const newValue = new MinuteCollection({ value: Number.parseFloat(formatedPrice), date });
+      newValue.save();
+   };
+}
+
 export async function startObservationJob() {
    await startBrowser();
 
    for (let index = 0; index < observedValues.length; index++) {
-      const { name, currency, collection, url, selector, separatorChar, platform } = observedValues[index];
-      const minuteModel = assetHistoryModels.get(collection).MinuteModel;
+      const { name, symbol, currency, url, selector, separatorChar, platform } = observedValues[index];
+      const assetChartName = getAssetChartName(name, symbol, currency);
+      const MinuteCollection = getChartDataPointCollection(assetChartName, TIME_AGG_LEVEL.MINUTE);
 
       console.log(`start observation of : ${url} (${name}_${currency})`);
-      await startPageObservation(url, selector, platform, (price, date) => {
-         let formatedPrice = price.replace(separatorChar, '');
-         if (separatorChar === DE_FORMAT) {
-            formatedPrice = formatedPrice.replace(US_FORMAT, DE_FORMAT);
-         }
-         // console.log('price :>> ', formatedPrice);
-         const newValue = new minuteModel({ value: Number.parseFloat(formatedPrice), date });
-         newValue.save();
-      });
+      await startPageObservation(url, selector, platform, storeNewPriceInDb(MinuteCollection, separatorChar));
       await sleep(2000);
    }
 }
