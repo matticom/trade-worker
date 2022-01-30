@@ -24,7 +24,7 @@ export async function getChartDataPoints(collection, startMoment, endMoment) {
       body.date['$lt'] = endMoment.toDate();
    }
 
-   return await collection.find(body);
+   return await collection.find(body).lean();
 }
 
 export async function getLatestQuote(assetChartName) {

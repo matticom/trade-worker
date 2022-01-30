@@ -45,7 +45,7 @@ export const AssetChartSchema = new Mongoose.Schema({
 
 export const Poi_CollectionName = 'POIs';
 export const PoiSchema = new Mongoose.Schema({
-   AssetChartName: { type: String, required: true }, // AssetChartSchema.name_AssetChartSchema.timeAggLevel
+   chartName: { type: String, required: true }, // AssetChartSchema.name_AssetChartSchema.timeAggLevel
    value: { type: Number, required: true },
    date: { type: Date, required: true },
    type: { type: String, required: true },

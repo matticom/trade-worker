@@ -29,11 +29,13 @@ import {
 } from './src/services/ScrapeService';
 import { observedValues } from './src/ObservedValues';
 import { processHistoricalData } from './src/services/HistoricalDataService';
-import { createInitialDbSetup, createInitialModelsAndData } from './src/db/ModelService';
+import { createInitialDbSetup, createInitialModelsAndData, getAssetChartName } from './src/db/ModelService';
 import { startAggregationService } from './src/services/AggregationService';
 
 import { sendEmail } from './src/services/EmailNotification';
 import moment from 'moment';
+import { EUR } from './src/constants';
+import { controlLongTermPois } from './src/controllers/DetectionController';
 
 const port = process.env.PORT || 8200;
 const app = express();
@@ -99,19 +101,25 @@ db.once('open', function () {
 
 createInitialDbSetup(observedValues);
 
-startAggregationService();
+// startAggregationService();
 
 // Observation JOBS
 // ----------------
 
-startObservationJob();
+// startObservationJob();
 
-monitoringObservationHealth();
+// monitoringObservationHealth();
 
 // Finding new assets and filling DB with history data
 // ---------------------------------------------------
 
 // processHistoricalData();
+
+try {
+   controlLongTermPois(getAssetChartName('Gold', 'GOLD', EUR));
+} catch (error) {
+   console.log('error :>> ', error);
+}
 
 // findAssetBySymbol('BTC').then((res) => console.log('res :>> ', res));
 
