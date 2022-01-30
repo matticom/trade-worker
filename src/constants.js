@@ -39,9 +39,16 @@ export const MINUTE_RETENTION_IN_DAYS = 3;
 export const HOUR_RETENTION_IN_DAYS = 30;
 
 // detection
+export const MAX_PEAK_DETERMINATION = 60;
 export const PEAK_PERCENT = 10;
-export const PLATEAU_MIN_LENGTH = 5;
-export const PLATEAU_TOLERANCE_PERCENT = 3;
+export const PLATEAU_MIN_LENGTH = 15;
+export const PLATEAU_TOLERANCE_PERCENT = 1;
+
+export const PEAK_HIGH = 'peak_high';
+export const PEAK_LOW = 'peak_low';
+export const PLATEAU_START = 'plateau_start';
+export const PLATEAU_END = 'plateau_end';
+export const THRESHOLD = 'threshold';
 
 // collection names
 
