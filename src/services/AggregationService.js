@@ -1,11 +1,11 @@
 import _ from 'lodash';
 import roundTo from 'round-to';
 import cron from 'cron';
-import { observedValues } from '../ObservedValues';
 import { db } from '../db/mongoDb';
 import moment from 'moment';
-import { HOUR_TIME_AGG_LEVEL, HOUR_RETENTION_IN_DAYS, MINUTE_RETENTION_IN_DAYS, TIME_AGG_LEVEL } from '../constants';
-import { getAssetChartName, getChartDataPointCollection, getChartDataPointName } from '../db/ModelService';
+import { HOUR_RETENTION_IN_DAYS, MINUTE_RETENTION_IN_DAYS, TIME_AGG_LEVEL } from '../constants';
+import { getAssetKey, getChartDataPointCollection, getChartDataPointName } from '../db/ModelService';
+import { assets } from '../Assets';
 
 async function aggregateLastHour(assetChartName) {
    const MinuteCollection = getChartDataPointCollection(assetChartName, TIME_AGG_LEVEL.MINUTE);
@@ -67,9 +67,9 @@ export async function startAggregationService() {
    // starts every new day 30 minutes after midnight
    const dailyJob = new cron.CronJob(`30 00 * * *`, async () => {
       try {
-         for (let index = 0; index < observedValues.length; index++) {
-            const { name, symbol, currency } = observedValues[index];
-            const assetChartName = getAssetChartName(name, symbol, currency);
+         for (let index = 0; index < assets.length; index++) {
+            const { name, symbol, currency } = assets[index];
+            const assetChartName = getAssetKey(name, symbol, currency);
             await aggregateLastDay(assetChartName);
             await deleteOldHours(assetChartName);
          }
@@ -78,12 +78,12 @@ export async function startAggregationService() {
       }
    });
 
-   // starts every new hour 5 minutes after midnight
+   // starts every new hour 5 minutes
    const hourlyJob = new cron.CronJob(`5 * * * *`, async () => {
       try {
-         for (let index = 0; index < observedValues.length; index++) {
-            const { name, symbol, currency } = observedValues[index];
-            const assetChartName = getAssetChartName(name, symbol, currency);
+         for (let index = 0; index < assets.length; index++) {
+            const { name, symbol, currency } = assets[index];
+            const assetChartName = getAssetKey(name, symbol, currency);
             await aggregateLastHour(assetChartName);
             await deleteOldMinutes(assetChartName);
          }

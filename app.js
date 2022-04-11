@@ -27,15 +27,16 @@ import {
    startObservationJob,
    test,
 } from './src/services/ScrapeService';
-import { observedValues } from './src/ObservedValues';
 import { processHistoricalData } from './src/services/HistoricalDataService';
-import { createInitialDbSetup, createInitialModelsAndData, getAssetChartName } from './src/db/ModelService';
+import { createInitialDbSetup, createInitialModelsAndData, getAssetKey } from './src/db/ModelService';
 import { startAggregationService } from './src/services/AggregationService';
 
 import { sendEmail } from './src/services/EmailNotification';
 import moment from 'moment';
 import { EUR } from './src/constants';
 import { controlLongTermPois } from './src/controllers/DetectionController';
+import { assets } from './src/Assets';
+// import { fetchPage } from './src/Test.cjs';
 
 const port = process.env.PORT || 8200;
 const app = express();
@@ -55,6 +56,8 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
    console.log('Connected to MongoDB');
 });
+
+// fetchPage();
 
 // -----------------------------------------------------------
 // to be checked out: https://www.npmjs.com/package/iex-cloud
@@ -99,27 +102,27 @@ db.once('open', function () {
 
 // const rawData = sourceData.filter((data) => data.date >= start && data.date <= end);
 
-createInitialDbSetup(observedValues);
+createInitialDbSetup(assets);
 
 // startAggregationService();
 
 // Observation JOBS
 // ----------------
 
-// startObservationJob();
+startObservationJob();
 
-// monitoringObservationHealth();
+monitoringObservationHealth();
 
 // Finding new assets and filling DB with history data
 // ---------------------------------------------------
 
 // processHistoricalData();
 
-try {
-   controlLongTermPois(getAssetChartName('Gold', 'GOLD', EUR));
-} catch (error) {
-   console.log('error :>> ', error);
-}
+// try {
+//    controlLongTermPois(getAssetKey('Gold', 'GOLD', EUR));
+// } catch (error) {
+//    console.log('error :>> ', error);
+// }
 
 // findAssetBySymbol('BTC').then((res) => console.log('res :>> ', res));
 

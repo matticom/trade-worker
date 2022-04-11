@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { EUR, TIME_AGG_LEVEL } from '../constants';
-import { getAssetChartName, getChartDataPointCollection, getChartDataPointName } from '../db/ModelService';
+import { getAssetKey, getChartDataPointCollection, getChartDataPointName } from '../db/ModelService';
 import { db } from '../db/mongoDb';
 
 const { findAsset, getHistoricalData } = require('../api/yahoo');
@@ -27,7 +27,7 @@ export async function processHistoricalData(assetName = 'Gold', assetSymbol = 'G
       date: moment.unix(quote.date).startOf('day').toDate(),
    }));
 
-   const assetChartName = getAssetChartName(assetName, assetSymbol, currency);
+   const assetChartName = getAssetKey(assetName, assetSymbol, currency);
    const DayCollection = getChartDataPointCollection(assetChartName, TIME_AGG_LEVEL.DAY);
 
    const latestDocArray = await DayCollection.find().sort({ date: -1 }).limit(1);

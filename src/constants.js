@@ -38,26 +38,18 @@ export const DE_FORMAT = '.';
 export const MINUTE_RETENTION_IN_DAYS = 3;
 export const HOUR_RETENTION_IN_DAYS = 30;
 
-// detection
-export const MAX_PEAK_DETERMINATION = 60;
-export const PEAK_PERCENT = 10;
-export const PLATEAU_MIN_LENGTH = 15;
-export const PLATEAU_TOLERANCE_PERCENT = 1;
-
-export const PEAK_HIGH = 'peak_high';
-export const PEAK_LOW = 'peak_low';
-export const PLATEAU_START = 'plateau_start';
-export const PLATEAU_END = 'plateau_end';
-export const THRESHOLD = 'threshold';
+export const PEAK_HIGH = 'PEAK_HIGH';
+export const PEAK_LOW = 'PEAK_LOW';
+export const PLATEAU_START = 'PLATEAU_START';
+export const PLATEAU_END = 'PLATEAU_END';
+export const THRESHOLD = 'THRESHOLD';
 
 // collection names
 
-//
-
 export const TIME_AGG_LEVEL = {
-   MINUTE: 'minute',
-   HOUR: 'hour',
-   DAY: 'day',
+   MINUTE: 'MINUTE',
+   HOUR: 'HOUR',
+   DAY: 'DAY',
 };
 
 export const POSTFIX_MODEL_MAP = {};

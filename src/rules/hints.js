@@ -1,6 +1,6 @@
 import moment from 'moment';
 import {
-   MAX_PEAK_DETERMINATION,
+   DETECTION_TIMEOUT,
    PEAK_HIGH,
    PEAK_LOW,
    PEAK_PERCENT,
@@ -109,7 +109,7 @@ export function staticPercentThresholds(data, thresholdArray) {
 const defaultParams = {
    // if percentage not reached max after X time units acknowledged as peak
    // the less volatile the asset price the longer this value (e.g. Gold = very low volatile => 60 days)
-   maxPeakDetermination: MAX_PEAK_DETERMINATION,
+   peakDetectionTimeout: DETECTION_TIMEOUT,
 
    // min de/increase after new peak, so that acknowledged as peak
    peakPercent: PEAK_PERCENT,
@@ -173,10 +173,13 @@ export function peakPlateauDetection(dayData, params = defaultParams) {
          if (positiveSlope) {
             // console.log('vv bottomThreshold :>> ', bottomThreshold(currentPeak.value));
             peakAcknowledgeCounter++;
-            if (value < bottomThreshold(currentPeak.value) || peakAcknowledgeCounter > params.maxPeakDetermination) {
+            if (value < bottomThreshold(currentPeak.value) || peakAcknowledgeCounter > params.peakDetectionTimeout) {
                negativeSlope = true;
                positiveSlope = false;
-               foundPeakPlateau.push({ ...currentPeak, type: PEAK_HIGH });
+               const criteria =
+                  peakAcknowledgeCounter > params.peakDetectionTimeout ? 'DETECTION_TIMEOUT' : 'PERCENTAGE';
+               const detectionDate = moment.unix(quote.date).format('YYYY-MM-DD');
+               foundPeakPlateau.push({ ...currentPeak, type: PEAK_HIGH, criteria, detectionDate });
                // console.log('----- // ------ found high peak :>> ', { ...currentPeak });
                peakAcknowledgeCounter = 0;
                currentPeak = quote; // new low peak (2)
@@ -190,10 +193,13 @@ export function peakPlateauDetection(dayData, params = defaultParams) {
          if (negativeSlope) {
             // console.log('^^upperThreshold :>> ', upperThreshold(currentPeak.value));
             peakAcknowledgeCounter++;
-            if (value > upperThreshold(currentPeak.value) || peakAcknowledgeCounter > params.maxPeakDetermination) {
+            if (value > upperThreshold(currentPeak.value) || peakAcknowledgeCounter > params.peakDetectionTimeout) {
                negativeSlope = false;
                positiveSlope = true;
-               foundPeakPlateau.push({ ...currentPeak, type: PEAK_LOW });
+               const criteria =
+                  peakAcknowledgeCounter > params.peakDetectionTimeout ? 'DETECTION_TIMEOUT' : 'PERCENTAGE';
+               const detectionDate = moment.unix(quote.date).format('YYYY-MM-DD');
+               foundPeakPlateau.push({ ...currentPeak, type: PEAK_LOW, criteria, detectionDate });
                // console.log('----- // ------ found low peak :>> ', { ...currentPeak });
                peakAcknowledgeCounter = 0;
                currentPeak = quote; // new high peak (2)
@@ -206,11 +212,13 @@ export function peakPlateauDetection(dayData, params = defaultParams) {
          }
       }
    });
-   return foundPeakPlateau.map(({ value, date, type }) => ({
+   return foundPeakPlateau.map(({ value, date, type, criteria, detectionDate }) => ({
       value,
       date,
       dateStr: moment.unix(date).format('YYYY-MM-DD'),
       type,
+      criteria: criteria === undefined ? 'DEFAULT' : criteria,
+      detectionDate: detectionDate === undefined ? moment.unix(date).format('YYYY-MM-DD') : detectionDate,
    }));
 }
 

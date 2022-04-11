@@ -1,6 +1,5 @@
 import { sleep } from '../tools/General';
 import moment from 'moment';
-import { observedValues } from '../ObservedValues';
 import {
    ASSET_POLLING_FUZZY_LENGTH_MSEC,
    ASSET_POLLING_INTERVAL_LENGTH_MSEC,
@@ -8,8 +7,9 @@ import {
    EN_FORMAT,
    TIME_AGG_LEVEL,
 } from '../constants';
-import { getAssetChartName, getChartDataPointCollection } from '../db/ModelService';
+import { getAssetKey, getChartDataPointCollection } from '../db/ModelService';
 import { tradingPlatforms } from '../TradePlatforms';
+import { assets } from '../Assets';
 
 const valueRegex = /[^0-9]*([0-9,.]*)[^0-9]*/;
 
@@ -122,16 +122,21 @@ export async function startPageObservation(url, selector, platform, dbStoreFn) {
       const page = await browser.newPage();
       page.setExtraHTTPHeaders(httpHeader);
       // console.log((await page.goto('https://example.org/')).request().headers());
-      await page.goto(url);
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+      let html = await page.content();
+      console.log('html :>> ', html);
+      await page.waitForSelector(selector);
       const elementHandle = await page.$(selector);
 
       activePages[url] = { emitter, price: 0, intervalId: null, selector, url, active: true };
       emitter.addListener('refresh', async () => {
          try {
-            if (shouldAskForPrice(platform)) {
+            // if (shouldAskForPrice(platform)) {
+            if (true) {
                console.log(`new fetch for ${url} :>> `, moment().format('HH:mm:ss SSS'));
                // await page.reload();
-               const unformatedPrice = await page.evaluate((selected) => selected.innerText, elementHandle);
+               const unformatedPrice = await page.evaluate((selected) => selected.innerHTML, elementHandle);
+               console.log('unformatedPrice :>> ', unformatedPrice);
                const foundValue = unformatedPrice.match(valueRegex);
                const price = foundValue[1];
                const date = moment().toDate();
@@ -140,6 +145,8 @@ export async function startPageObservation(url, selector, platform, dbStoreFn) {
                if (dbStoreFn !== undefined) {
                   dbStoreFn(price, date);
                }
+            } else {
+               console.log('Exchange is closed');
             }
          } catch (error) {
             console.log('emitter error :>> ', error);
@@ -163,6 +170,7 @@ export async function startPageObservation(url, selector, platform, dbStoreFn) {
 }
 
 function shouldAskForPrice(platform) {
+   console.log('platform :>> ', platform);
    const { tradeWeekend, tradeAnyTime } = tradingPlatforms[platform];
    if (tradeAnyTime) return true;
 
@@ -212,13 +220,13 @@ function storeNewPriceInDb(MinuteCollection, separatorChar) {
 export async function startObservationJob() {
    await startBrowser();
 
-   for (let index = 0; index < observedValues.length; index++) {
-      const { name, symbol, currency, url, selector, separatorChar, platform } = observedValues[index];
-      const assetChartName = getAssetChartName(name, symbol, currency);
+   for (let index = 0; index < assets.length; index++) {
+      const { name, symbol, currency, url, selector, separatorChar, tradingPlatform } = assets[index];
+      const assetChartName = getAssetKey(name, symbol, currency);
       const MinuteCollection = getChartDataPointCollection(assetChartName, TIME_AGG_LEVEL.MINUTE);
 
       console.log(`start observation of : ${url} (${name}_${currency})`);
-      await startPageObservation(url, selector, platform, storeNewPriceInDb(MinuteCollection, separatorChar));
+      await startPageObservation(url, selector, tradingPlatform, storeNewPriceInDb(MinuteCollection, separatorChar));
       await sleep(2000);
    }
 }
