@@ -13,7 +13,7 @@ import { assets } from '../Assets';
 
 const valueRegex = /[^0-9]*([0-9,.]*)[^0-9]*/;
 
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra');
 // const Url = require('url-parse');
 const proxy_check = require('proxy-check');
 const proxyChecker = require('proxy-checker');
@@ -21,24 +21,29 @@ const fs = require('fs');
 var request = require('request');
 var promiseRequest = require('request-promise-native');
 
-const httpHeader = {
-   Accept:
-      'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-   ['Accept-Encoding']: 'gzip, deflate, br',
-   ['Accept-Language']: 'de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7',
-   Dnt: '1',
-   // Host: 'httpbin.org',
-   Referer: 'https://www.google.com/',
-   ['Sec-Ch-Ua']: '"Chromium";v="92", " Not A;Brand";v="99", "Google Chrome";v="92"',
-   ['Sec-Ch-Ua-Mobile']: '?0',
-   ['Sec-Fetch-Dest']: 'document',
-   ['Sec-Fetch-Mode']: 'navigate',
-   ['Sec-Fetch-Site']: 'cross-site',
-   ['Sec-Fetch-User']: '?1',
-   ['Upgrade-Insecure-Requests']: '1',
-   ['User-Agent']:
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36',
-};
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+puppeteer.use(StealthPlugin());
+
+const userAgent = require('user-agents');
+
+// const httpHeader = {
+//    Accept:
+//       'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+//    ['Accept-Encoding']: 'gzip, deflate, br',
+//    ['Accept-Language']: 'de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7',
+//    Dnt: '1',
+//    // Host: 'httpbin.org',
+//    Referer: 'https://www.google.com/',
+//    ['Sec-Ch-Ua']: '"Chromium";v="92", " Not A;Brand";v="99", "Google Chrome";v="92"',
+//    ['Sec-Ch-Ua-Mobile']: '?0',
+//    ['Sec-Fetch-Dest']: 'document',
+//    ['Sec-Fetch-Mode']: 'navigate',
+//    ['Sec-Fetch-Site']: 'cross-site',
+//    ['Sec-Fetch-User']: '?1',
+//    ['Upgrade-Insecure-Requests']: '1',
+//    ['User-Agent']:
+//       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36',
+// };
 
 const PRICE_SELECTOR = '#last';
 const PRICE_SELECTOR_GOOGLE = '#SIvCob';
@@ -92,7 +97,7 @@ export async function closeBrowser() {
 export async function getProxyIPs() {
    console.error('Get Proxy IP ....');
    const page = await browser.newPage();
-   page.setExtraHTTPHeaders(httpHeader);
+   // page.setExtraHTTPHeaders(httpHeader);
    try {
       await page.goto('https://www.sslproxies.org/');
       const ipTagHandle = await page.$$(
@@ -120,11 +125,12 @@ export async function startPageObservation(url, selector, platform, dbStoreFn) {
       // console.log(`start observation of : ${url}`);
       const emitter = new EventEmitter();
       const page = await browser.newPage();
-      page.setExtraHTTPHeaders(httpHeader);
+      await page.setUserAgent(userAgent.toString());
+      // page.setExtraHTTPHeaders(httpHeader);
       // console.log((await page.goto('https://example.org/')).request().headers());
       await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
-      let html = await page.content();
-      console.log('html :>> ', html);
+      // let html = await page.content();
+      // console.log('html :>> ', html);
       await page.waitForSelector(selector);
       const elementHandle = await page.$(selector);
 

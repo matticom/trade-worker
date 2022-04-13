@@ -36,7 +36,7 @@ import moment from 'moment';
 import { EUR } from './src/constants';
 import { controlLongTermPois } from './src/controllers/DetectionController';
 import { assets } from './src/Assets';
-// import { fetchPage } from './src/Test.cjs';
+import { fetchPage } from './src/Test.cjs';
 
 const port = process.env.PORT || 8200;
 const app = express();
@@ -109,9 +109,9 @@ createInitialDbSetup(assets);
 // Observation JOBS
 // ----------------
 
-startObservationJob();
+// startObservationJob();
 
-monitoringObservationHealth();
+// monitoringObservationHealth();
 
 // Finding new assets and filling DB with history data
 // ---------------------------------------------------
