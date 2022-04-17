@@ -60,8 +60,6 @@ let MAX_RETRIES = 5;
 let ipIsBeingChanged = false;
 let serviceStopped = false;
 
-const EventEmitter = require('events');
-
 // export async function getPageHTML(pageUrl) {
 
 //    const browser = await puppeteer.launch();
@@ -123,7 +121,6 @@ export async function getProxyIPs() {
 export async function startPageObservation(url, selector, platform, dbStoreFn) {
    try {
       // console.log(`start observation of : ${url}`);
-      const emitter = new EventEmitter();
       const page = await browser.newPage();
       await page.setUserAgent(userAgent.toString());
       // page.setExtraHTTPHeaders(httpHeader);
@@ -134,44 +131,50 @@ export async function startPageObservation(url, selector, platform, dbStoreFn) {
       await page.waitForSelector(selector);
       const elementHandle = await page.$(selector);
 
-      activePages[url] = { emitter, price: 0, intervalId: null, selector, url, active: true };
-      emitter.addListener('refresh', async () => {
-         try {
-            // if (shouldAskForPrice(platform)) {
-            if (true) {
-               console.log(`new fetch for ${url} :>> `, moment().format('HH:mm:ss SSS'));
-               // await page.reload();
-               const unformatedPrice = await page.evaluate((selected) => selected.innerHTML, elementHandle);
-               console.log('unformatedPrice :>> ', unformatedPrice);
-               const foundValue = unformatedPrice.match(valueRegex);
-               const price = foundValue[1];
-               const date = moment().toDate();
-               activePages[url].price = price;
-               activePages[url].date = date;
-               if (dbStoreFn !== undefined) {
-                  dbStoreFn(price, date);
-               }
-            } else {
-               console.log('Exchange is closed');
-            }
-         } catch (error) {
-            console.log('emitter error :>> ', error);
-            // stopAllPageObservations();
-            // console.log('before stop :>> ', ipIsBeingChanged);
-            // if (!ipIsBeingChanged) {
-            //    ipIsBeingChanged = true;
-            //    await changeIP();
-            //    await restartObservations();
-            //    ipIsBeingChanged = false;
-            // }
-         }
-      });
+      activePages[url] = { price: 0, intervalId: null, selector, url, active: true };
       activePages[url].intervalId = setInterval(async () => {
-         await sleep(Math.random() * ASSET_POLLING_FUZZY_LENGTH_MSEC);
-         emitter.emit('refresh');
+         try {
+            await sleep(Math.random() * ASSET_POLLING_FUZZY_LENGTH_MSEC);
+            await fetchPrice(url, page, elementHandle, platform, dbStoreFn);
+         } catch (error) {
+            console.log('fetch error :>> ', error);
+         }
       }, ASSET_POLLING_INTERVAL_LENGTH_MSEC);
    } catch (error) {
       console.log('another error :>> ', error);
+   }
+}
+
+async function fetchPrice(url, page, elementHandle, platform, dbStoreFn) {
+   try {
+      if (shouldAskForPrice(platform)) {
+         // if (true) {
+         console.log(`new fetch for ${url} :>> `, moment().format('HH:mm:ss SSS'));
+         // await page.reload();
+         const unformatedPrice = await page.evaluate((selected) => selected.innerHTML, elementHandle);
+         // console.log('unformatedPrice :>> ', unformatedPrice);
+         const foundValue = unformatedPrice.match(valueRegex);
+         const price = foundValue[1];
+         console.log('price :>> ', price);
+         const date = moment().toDate();
+         activePages[url].price = price;
+         activePages[url].date = date;
+         if (dbStoreFn !== undefined) {
+            await dbStoreFn(price, date);
+         }
+      } else {
+         console.log('Exchange is closed');
+      }
+   } catch (error) {
+      console.log('emitter error :>> ', error);
+      // stopAllPageObservations();
+      // console.log('before stop :>> ', ipIsBeingChanged);
+      // if (!ipIsBeingChanged) {
+      //    ipIsBeingChanged = true;
+      //    await changeIP();
+      //    await restartObservations();
+      //    ipIsBeingChanged = false;
+      // }
    }
 }
 
@@ -212,14 +215,14 @@ function shouldAskForPrice(platform) {
 }
 
 function storeNewPriceInDb(MinuteCollection, separatorChar) {
-   return (price, date) => {
+   return async (price, date) => {
       let formatedPrice = price.replace(separatorChar, '');
       if (separatorChar === DE_FORMAT) {
          formatedPrice = formatedPrice.replace(EN_FORMAT, DE_FORMAT);
       }
       // console.log('price :>> ', formatedPrice);
       const newValue = new MinuteCollection({ value: Number.parseFloat(formatedPrice), date });
-      newValue.save();
+      await newValue.save();
    };
 }
 
@@ -252,7 +255,6 @@ export async function monitoringObservationHealth() {
                Object.keys(activePages).map((url) => ({
                   ...activePages[url],
                   intervalId: activePages[url].intervalId !== null,
-                  emitter: activePages[url].emitter !== null,
                })),
             );
          }
@@ -271,12 +273,8 @@ function stopAllPageObservations() {
 export function stopPageObservation(url, pause = false) {
    clearInterval(activePages[url].intervalId);
    console.log('url :>> ', url);
-   if (activePages[url].emitter) {
-      activePages[url].emitter.removeAllListeners();
-   }
    if (pause) {
       activePages[url] = {
-         emitter: null,
          price: 0,
          intervalId: null,
          selector: activePages[url].selector,
@@ -398,7 +396,6 @@ export async function test() {
                Object.keys(activePages).map((url) => ({
                   ...activePages[url],
                   intervalId: activePages[url].intervalId !== null,
-                  emitter: activePages[url].emitter !== null,
                })),
             );
          }
