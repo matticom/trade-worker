@@ -5,7 +5,6 @@ export const jobRegistry = {};
 
 export function addJob(assetKey, name, type, handler, startMoment, endMoment) {
    const assetJobs = jobRegistry[assetKey] ? jobRegistry[assetKey] : [];
-   console.log('assetJobs :>> ', assetJobs);
    if (assetJobs.some((job) => job.name === name)) {
       console.log(`Job name '${name}' already exists`);
       return;

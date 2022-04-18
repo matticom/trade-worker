@@ -1,6 +1,6 @@
 import Mongoose from 'mongoose';
 
-const Trade_CollectionName = 'Trades';
+export const Trade_CollectionName = 'Trades';
 const TradeSchema = new Mongoose.Schema({
    action: { type: String, required: true },
    date: { type: Date, required: true },
@@ -20,7 +20,7 @@ const ProfileSchema = new Mongoose.Schema({
 
 export const ProfileCollection = Mongoose.model(Profile_CollectionName, ProfileSchema, Profile_CollectionName);
 
-const Asset_CollectionName = 'Assets';
+export const Asset_CollectionName = 'Assets';
 const AssetSchema = new Mongoose.Schema({
    key: { type: String, required: true },
    name: { type: String, required: true },
@@ -35,7 +35,7 @@ const AssetSchema = new Mongoose.Schema({
 
 export const AssetCollection = Mongoose.model(Asset_CollectionName, AssetSchema, Asset_CollectionName);
 
-const Currency_CollectionName = 'Currencies';
+export const Currency_CollectionName = 'Currencies';
 const CurrencySchema = new Mongoose.Schema({
    name: { type: String, required: true },
    symbol: { type: String, required: true },
@@ -44,7 +44,8 @@ const CurrencySchema = new Mongoose.Schema({
 export const CurrencyCollection = Mongoose.model(Currency_CollectionName, CurrencySchema, Currency_CollectionName);
 
 // collection name creation is dynamical
-// collection instance name = AssetChartSchema.name_AssetChartSchema.timeAggLevel
+// assetKey = AssetSchema.name[0-X]_AssetSchema.symbol_AssetSchema.name_currency
+// collection instance name = assetKey_AssetTimeAggChartSchema.timeAggLevel
 // e.g. Gold_GOLD_EUR_day
 export const ChartDataPointSchema = new Mongoose.Schema({
    value: { type: Number, required: true },
@@ -52,9 +53,9 @@ export const ChartDataPointSchema = new Mongoose.Schema({
 });
 
 // e.g. name: Gold_GOLD_EUR, timeAggLevel: DAY
-const AssetChart_CollectionName = 'AssetCharts';
-const AssetChartSchema = new Mongoose.Schema({
-   name: { type: String, required: true }, // AssetSchema.name[0-X]_AssetSchema.symbol_AssetSchema.name_currency
+export const AssetTimeAggChart_CollectionName = 'AssetTimeAggCharts';
+const AssetTimeAggChartSchema = new Mongoose.Schema({
+   name: { type: String, required: true }, // AssetSchema.name[0-X]_AssetSchema.symbol_AssetSchema.name_currency = assetKey
    timeAggLevel: { type: String, required: true },
    plateauMinLength: { type: Number, required: true },
    plateauTolerancePercent: { type: Number, required: true },
@@ -62,15 +63,15 @@ const AssetChartSchema = new Mongoose.Schema({
    peakDetectionTimeout: { type: Number, required: true },
 });
 
-export const AssetChartCollection = Mongoose.model(
-   AssetChart_CollectionName,
-   AssetChartSchema,
-   AssetChart_CollectionName,
+export const AssetTimeAggChartCollection = Mongoose.model(
+   AssetTimeAggChart_CollectionName,
+   AssetTimeAggChartSchema,
+   AssetTimeAggChart_CollectionName,
 );
 
 const Poi_CollectionName = 'POIs';
 const PoiSchema = new Mongoose.Schema({
-   chartName: { type: String, required: true }, // AssetChartSchema.name_AssetChartSchema.timeAggLevel
+   chartName: { type: String, required: true }, // AssetTimeAggChartSchema.name_AssetTimeAggChartSchema.timeAggLevel
    value: { type: Number, required: true },
    date: { type: Date, required: true },
    type: { type: String, required: true },
@@ -81,7 +82,7 @@ const PoiSchema = new Mongoose.Schema({
 
 export const PoiCollection = Mongoose.model(Poi_CollectionName, PoiSchema, Poi_CollectionName);
 
-const TradingPlatform_CollectionName = 'TradingPlatforms';
+export const TradingPlatform_CollectionName = 'TradingPlatforms';
 const TradingPlatformSchema = new Mongoose.Schema({
    name: { type: String },
    tradeStartMonFri: { type: String },

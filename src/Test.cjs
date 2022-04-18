@@ -1,6 +1,6 @@
 const { assets } = require('./Assets');
 const { getAssetKey } = require('./db/ModelService');
-const { addJob, removeAllAssetJobs } = require('./jobs/jobs');
+const { addJob, removeAllAssetJobs, removeAssetJob } = require('./jobs/jobs');
 const { sleep } = require('./tools/General');
 const moment = require('moment');
 
@@ -17,7 +17,7 @@ async function testJobs() {
    await sleep(15000);
    const { name, symbol, currency, url, selector, separatorChar, tradingPlatform } = assets[0];
    const assetKey = getAssetKey(name, symbol, currency);
-   addJob(
+   const job1 = addJob(
       assetKey,
       'test_job',
       'long period',
@@ -26,7 +26,7 @@ async function testJobs() {
       },
       moment.utc(),
    );
-   addJob(
+   const job2 = addJob(
       assetKey,
       'test_job_short',
       'short period',
@@ -37,7 +37,8 @@ async function testJobs() {
    );
    await sleep(15000);
    console.log('!!!!!!!!! removed all jobs !!!!!!!!!');
-   removeAllAssetJobs(assetKey);
+   removeAssetJob(job1);
+   removeAssetJob(job2);
 }
 
 module.exports = {

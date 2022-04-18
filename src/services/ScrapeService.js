@@ -8,9 +8,9 @@ import {
    TIME_AGG_LEVEL,
 } from '../constants';
 import { getAssetKey, getChartDataPointCollection } from '../db/ModelService';
-import { tradingPlatforms } from '../TradePlatforms';
 import { assets } from '../Assets';
 import { createAssetEmitter, sendRefresh } from '../jobs/AssetEmitter';
+import { TradingPlatformCollection } from '../db/schemas';
 
 const valueRegex = /[^0-9]*([0-9,.]*)[^0-9]*/;
 
@@ -149,7 +149,7 @@ export async function startPageObservation(assetKey, url, selector, platform, db
 
 async function fetchPrice(url, page, elementHandle, platform, dbStoreFn) {
    try {
-      if (shouldAskForPrice(platform)) {
+      if (await shouldAskForPrice(platform)) {
          // if (true) {
          console.log(`new fetch for ${url} :>> `, moment().format('HH:mm:ss SSS'));
          // await page.reload();
@@ -180,21 +180,23 @@ async function fetchPrice(url, page, elementHandle, platform, dbStoreFn) {
    }
 }
 
-function shouldAskForPrice(platform) {
-   console.log('platform :>> ', platform);
-   const { tradeWeekend, tradeAnyTime } = tradingPlatforms[platform];
+async function shouldAskForPrice(platformName) {
+   // console.log('platform :>> ', platformName);
+   const platform = await TradingPlatformCollection.findOne({ name: platformName });
+   const { tradeWeekend, tradeAnyTime } = platform;
    if (tradeAnyTime) return true;
 
    const now = moment();
    const dayOfWeek = now.isoWeekday();
    const dateString = now.format('DD.MM.YYYY');
 
+   // what about holidays???
    if (dayOfWeek > 5) {
       // Sat-Sun
       if (!tradeWeekend) {
          return false;
       } else {
-         const { tradeStartSat, tradeEndSat, tradeStartSun, tradeEndSun } = tradingPlatforms[platform];
+         const { tradeStartSat, tradeEndSat, tradeStartSun, tradeEndSun } = platform;
          if (dayOfWeek === 6) {
             // Sat
             const momentTradeStartSat = moment(`${dateString} ${tradeStartSat}`, 'DD.MM.YYYY HH:mm');
@@ -209,7 +211,7 @@ function shouldAskForPrice(platform) {
       }
    } else {
       // Mon-Fri
-      const { tradeStartMonFri, tradeEndMonFri } = tradingPlatforms[platform];
+      const { tradeStartMonFri, tradeEndMonFri } = platform;
       const momentTradeStart = moment(`${dateString} ${tradeStartMonFri}`, 'DD.MM.YYYY HH:mm');
       const momentTradeEnd = moment(`${dateString} ${tradeEndMonFri}`, 'DD.MM.YYYY HH:mm');
       return now.isSameOrAfter(momentTradeStart) && now.isSameOrBefore(momentTradeEnd);

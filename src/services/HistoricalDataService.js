@@ -27,8 +27,8 @@ export async function processHistoricalData(assetName = 'Gold', assetSymbol = 'G
       date: moment.unix(quote.date).startOf('day').toDate(),
    }));
 
-   const assetChartName = getAssetKey(assetName, assetSymbol, currency);
-   const DayCollection = getChartDataPointCollection(assetChartName, TIME_AGG_LEVEL.DAY);
+   const assetKey = getAssetKey(assetName, assetSymbol, currency);
+   const DayCollection = getChartDataPointCollection(assetKey, TIME_AGG_LEVEL.DAY);
 
    const latestDocArray = await DayCollection.find().sort({ date: -1 }).limit(1);
    if (latestDocArray.length !== 0) {
@@ -37,6 +37,6 @@ export async function processHistoricalData(assetName = 'Gold', assetSymbol = 'G
    }
 
    if (newDocuments.length > 0) {
-      await db.collection(getChartDataPointName(assetChartName, TIME_AGG_LEVEL.DAY)).insertMany(newDocuments);
+      await db.collection(getChartDataPointName(assetKey, TIME_AGG_LEVEL.DAY)).insertMany(newDocuments);
    }
 }

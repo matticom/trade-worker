@@ -13,7 +13,12 @@ import { getResult } from './src/controllers/SimulationController';
 
 import http from 'http';
 import CommunicationService from './src/services/CommunicationService';
-import TestRouter from './src/routes/TestRouter';
+
+import JobRouter from './src/routes/Jobs';
+import AssetRouter from './src/routes/Assets';
+import TradingPlatformRouter from './src/routes/TradingPlatforms';
+import CurrencyRouter from './src/routes/Currencies';
+
 import { db, getCollections } from './src/db/mongoDb';
 import { Trade, Profile, Asset, deka_growth_20, ChartDataPointSchema } from './src/db/schemas';
 import { findAsset, getHistoricalData } from './src/api/yahoo';
@@ -102,7 +107,7 @@ db.once('open', function () {
 
 // const rawData = sourceData.filter((data) => data.date >= start && data.date <= end);
 
-createInitialDbSetup(assets);
+createInitialDbSetup();
 
 // startAggregationService();
 
@@ -163,7 +168,10 @@ testJobs();
 
 // });
 
-app.use('/', TestRouter);
+app.use('/assets', AssetRouter);
+app.use('/jobs', JobRouter);
+app.use('/tradingPlatform', TradingPlatformRouter);
+app.use('/currencies', CurrencyRouter);
 
 /**
  * Catch-all

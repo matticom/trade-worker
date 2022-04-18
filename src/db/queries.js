@@ -27,8 +27,8 @@ export async function getChartDataPoints(collection, startMoment, endMoment) {
    return await collection.find(body).lean();
 }
 
-export async function getLatestQuote(assetChartName) {
-   const MinuteCollection = getChartDataPointCollection(assetChartName, TIME_AGG_LEVEL.MINUTE);
+export async function getLatestQuote(assetKey) {
+   const MinuteCollection = getChartDataPointCollection(assetKey, TIME_AGG_LEVEL.MINUTE);
    return await MinuteCollection.find().sort({ date: -1 }).limit(1);
 }
 
