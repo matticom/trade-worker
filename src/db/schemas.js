@@ -1,7 +1,7 @@
 import Mongoose from 'mongoose';
 
-export const Trade_CollectionName = 'Trades';
-export const TradeSchema = new Mongoose.Schema({
+const Trade_CollectionName = 'Trades';
+const TradeSchema = new Mongoose.Schema({
    action: { type: String, required: true },
    date: { type: Date, required: true },
    balance: { type: Number, required: true },
@@ -11,13 +11,17 @@ export const TradeSchema = new Mongoose.Schema({
    profile: { type: Mongoose.ObjectId, required: true },
 });
 
-export const Profile_CollectionName = 'Profiles';
-export const ProfileSchema = new Mongoose.Schema({
+export const TradeCollection = Mongoose.model(Trade_CollectionName, TradeSchema, Trade_CollectionName);
+
+const Profile_CollectionName = 'Profiles';
+const ProfileSchema = new Mongoose.Schema({
    name: { type: String, required: true },
 });
 
-export const Asset_CollectionName = 'Assets';
-export const AssetSchema = new Mongoose.Schema({
+export const ProfileCollection = Mongoose.model(Profile_CollectionName, ProfileSchema, Profile_CollectionName);
+
+const Asset_CollectionName = 'Assets';
+const AssetSchema = new Mongoose.Schema({
    key: { type: String, required: true },
    name: { type: String, required: true },
    symbol: { type: String, required: true }, // potencially by yahoo API --> get historical data
@@ -29,11 +33,15 @@ export const AssetSchema = new Mongoose.Schema({
    tradingPlatform: { type: String, required: true },
 });
 
-export const Currency_CollectionName = 'Currencies';
-export const CurrencySchema = new Mongoose.Schema({
+export const AssetCollection = Mongoose.model(Asset_CollectionName, AssetSchema, Asset_CollectionName);
+
+const Currency_CollectionName = 'Currencies';
+const CurrencySchema = new Mongoose.Schema({
    name: { type: String, required: true },
    symbol: { type: String, required: true },
 });
+
+export const CurrencyCollection = Mongoose.model(Currency_CollectionName, CurrencySchema, Currency_CollectionName);
 
 // collection name creation is dynamical
 // collection instance name = AssetChartSchema.name_AssetChartSchema.timeAggLevel
@@ -44,8 +52,8 @@ export const ChartDataPointSchema = new Mongoose.Schema({
 });
 
 // e.g. name: Gold_GOLD_EUR, timeAggLevel: DAY
-export const AssetChart_CollectionName = 'AssetCharts';
-export const AssetChartSchema = new Mongoose.Schema({
+const AssetChart_CollectionName = 'AssetCharts';
+const AssetChartSchema = new Mongoose.Schema({
    name: { type: String, required: true }, // AssetSchema.name[0-X]_AssetSchema.symbol_AssetSchema.name_currency
    timeAggLevel: { type: String, required: true },
    plateauMinLength: { type: Number, required: true },
@@ -54,8 +62,14 @@ export const AssetChartSchema = new Mongoose.Schema({
    peakDetectionTimeout: { type: Number, required: true },
 });
 
-export const Poi_CollectionName = 'POIs';
-export const PoiSchema = new Mongoose.Schema({
+export const AssetChartCollection = Mongoose.model(
+   AssetChart_CollectionName,
+   AssetChartSchema,
+   AssetChart_CollectionName,
+);
+
+const Poi_CollectionName = 'POIs';
+const PoiSchema = new Mongoose.Schema({
    chartName: { type: String, required: true }, // AssetChartSchema.name_AssetChartSchema.timeAggLevel
    value: { type: Number, required: true },
    date: { type: Date, required: true },
@@ -65,8 +79,10 @@ export const PoiSchema = new Mongoose.Schema({
    detectionDate: { type: String },
 });
 
-export const TradingPlatform_CollectionName = 'TradingPlatforms';
-export const TradingPlatformSchema = new Mongoose.Schema({
+export const PoiCollection = Mongoose.model(Poi_CollectionName, PoiSchema, Poi_CollectionName);
+
+const TradingPlatform_CollectionName = 'TradingPlatforms';
+const TradingPlatformSchema = new Mongoose.Schema({
    name: { type: String },
    tradeStartMonFri: { type: String },
    tradeEndMonFri: { type: String },
@@ -77,6 +93,12 @@ export const TradingPlatformSchema = new Mongoose.Schema({
    tradeWeekend: { type: Boolean, required: true },
    tradeAnyTime: { type: Boolean, required: true },
 });
+
+export const TradingPlatformCollection = Mongoose.model(
+   TradingPlatform_CollectionName,
+   TradingPlatformSchema,
+   TradingPlatform_CollectionName,
+);
 
 // export const ObservedAsset_CollectionName = 'ObservedAssets';
 // export const ObservedAssetSchema = new Mongoose.Schema({
