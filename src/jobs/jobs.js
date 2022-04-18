@@ -14,6 +14,14 @@ export function addJob(assetKey, name, type, handler, startMoment, endMoment) {
    assetJobs.push(job);
    jobRegistry[assetKey] = assetJobs;
    addJobToAssetEmitter(job);
+   return job;
+}
+
+export function removeAssetJob(jobToBeRemoved) {
+   const assetKey = jobToBeRemoved.getAssetKey();
+   const filtertedJobArray = jobRegistry[assetKey].filter((job) => job.name !== jobToBeRemoved.name);
+   jobRegistry[assetKey] = filtertedJobArray;
+   removeJobFromAssetEmitter(jobToBeRemoved);
 }
 
 export function removeAllAssetJobs(assetKey) {
@@ -29,6 +37,7 @@ class Job {
       this.handler = handler;
       this.start = start;
       this.end = end;
+      this.lifeTimeHandler = this.createJobEndDetectionHandler(this);
    }
 
    getAssetKey() {
@@ -39,12 +48,25 @@ class Job {
       return this.handler;
    }
 
+   getEnd() {
+      return this.end;
+   }
+
+   getName() {
+      return this.name;
+   }
+
    getJobEndDetectionHandler() {
+      return this.lifeTimeHandler;
+   }
+
+   createJobEndDetectionHandler(job) {
       return () => {
-         if (this.endMoment !== undefined) {
+         if (job.getEnd() !== undefined) {
             const now = moment.utc();
-            if (now.isAfter(this.endMoment)) {
-               removeJobFromAssetEmitter(this);
+            if (now.isAfter(job.getEnd())) {
+               removeAssetJob(job);
+               removeJobFromAssetEmitter(job);
             }
          }
       };
