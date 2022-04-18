@@ -7,10 +7,10 @@ import {
    EN_FORMAT,
    TIME_AGG_LEVEL,
 } from '../constants';
-import { getAssetKey, getChartDataPointCollection } from '../db/ModelService';
+import { getAssetByKey, getAssetKey, getChartDataPointCollection } from '../db/ModelService';
 import { assets } from '../Assets';
-import { createAssetEmitter, sendRefresh } from '../jobs/AssetEmitter';
-import { TradingPlatformCollection } from '../db/schemas';
+import { createAssetEmitter, removeAllJobFromAssetEmitter, sendRefresh } from '../jobs/AssetEmitter';
+import { AssetCollection, TradingPlatformCollection } from '../db/schemas';
 
 const valueRegex = /[^0-9]*([0-9,.]*)[^0-9]*/;
 
@@ -119,6 +119,62 @@ export async function getProxyIPs() {
    // }, 10000);
 }
 
+export async function startObservationJob() {
+   await startBrowser();
+
+   for (let index = 0; index < assets.length; index++) {
+      const { name, symbol, currency, url, selector, separatorChar, tradingPlatform } = assets[index];
+      const assetKey = getAssetKey(name, symbol, currency);
+      const MinuteCollection = getChartDataPointCollection(assetKey, TIME_AGG_LEVEL.MINUTE);
+      createAssetEmitter(assetKey);
+
+      console.log(`start observation of : ${url} (${name}_${currency})`);
+      await startPageObservation(
+         assetKey,
+         url,
+         selector,
+         tradingPlatform,
+         storeNewPriceInDb(MinuteCollection, separatorChar),
+      );
+      await sleep(2000);
+   }
+}
+
+export async function startAssetPriceRecording(assetKey) {
+   if (browser === null) {
+      await startBrowser();
+   }
+
+   const { url, selector, separatorChar, tradingPlatform } = await getAssetByKey(assetKey);
+   const MinuteCollection = getChartDataPointCollection(assetKey, TIME_AGG_LEVEL.MINUTE);
+   createAssetEmitter(assetKey);
+
+   await startPageObservation(
+      assetKey,
+      url,
+      selector,
+      tradingPlatform,
+      storeNewPriceInDb(MinuteCollection, separatorChar),
+   );
+}
+
+export async function stopAssetPriceRecording(assetKey) {
+   removeAllJobFromAssetEmitter(assetKey);
+   stopPageObservation(assetKey);
+}
+
+function storeNewPriceInDb(MinuteCollection, separatorChar) {
+   return async (price, date) => {
+      let formatedPrice = price.replace(separatorChar, '');
+      if (separatorChar === DE_FORMAT) {
+         formatedPrice = formatedPrice.replace(EN_FORMAT, DE_FORMAT);
+      }
+      // console.log('price :>> ', formatedPrice);
+      const newValue = new MinuteCollection({ value: Number.parseFloat(formatedPrice), date });
+      await newValue.save();
+   };
+}
+
 export async function startPageObservation(assetKey, url, selector, platform, dbStoreFn) {
    try {
       // console.log(`start observation of : ${url}`);
@@ -132,11 +188,11 @@ export async function startPageObservation(assetKey, url, selector, platform, db
       await page.waitForSelector(selector);
       const elementHandle = await page.$(selector);
 
-      activePages[url] = { assetKey, price: 0, intervalId: null, selector, url, active: true };
-      activePages[url].intervalId = setInterval(async () => {
+      activePages[assetKey] = { assetKey, price: 0, intervalId: null, selector, url, active: true, platform };
+      activePages[assetKey].intervalId = setInterval(async () => {
          try {
             await sleep(Math.random() * ASSET_POLLING_FUZZY_LENGTH_MSEC);
-            await fetchPrice(url, page, elementHandle, platform, dbStoreFn);
+            await fetchPrice(assetKey, url, page, elementHandle, platform, dbStoreFn);
             sendRefresh(assetKey);
          } catch (error) {
             console.log('fetch error :>> ', error);
@@ -147,7 +203,7 @@ export async function startPageObservation(assetKey, url, selector, platform, db
    }
 }
 
-async function fetchPrice(url, page, elementHandle, platform, dbStoreFn) {
+async function fetchPrice(assetKey, url, page, elementHandle, platform, dbStoreFn) {
    try {
       if (await shouldAskForPrice(platform)) {
          // if (true) {
@@ -159,8 +215,8 @@ async function fetchPrice(url, page, elementHandle, platform, dbStoreFn) {
          const price = foundValue[1];
          console.log('price :>> ', price);
          const date = moment().toDate();
-         activePages[url].price = price;
-         activePages[url].date = date;
+         activePages[assetKey].price = price;
+         activePages[assetKey].date = date;
          if (dbStoreFn !== undefined) {
             await dbStoreFn(price, date);
          }
@@ -180,13 +236,14 @@ async function fetchPrice(url, page, elementHandle, platform, dbStoreFn) {
    }
 }
 
-async function shouldAskForPrice(platformName) {
+export async function shouldAskForPrice(platformName) {
    // console.log('platform :>> ', platformName);
    const platform = await TradingPlatformCollection.findOne({ name: platformName });
    const { tradeWeekend, tradeAnyTime } = platform;
    if (tradeAnyTime) return true;
 
    const now = moment();
+   console.log('now :>> ', now.format());
    const dayOfWeek = now.isoWeekday();
    const dateString = now.format('DD.MM.YYYY');
 
@@ -218,54 +275,21 @@ async function shouldAskForPrice(platformName) {
    }
 }
 
-function storeNewPriceInDb(MinuteCollection, separatorChar) {
-   return async (price, date) => {
-      let formatedPrice = price.replace(separatorChar, '');
-      if (separatorChar === DE_FORMAT) {
-         formatedPrice = formatedPrice.replace(EN_FORMAT, DE_FORMAT);
-      }
-      // console.log('price :>> ', formatedPrice);
-      const newValue = new MinuteCollection({ value: Number.parseFloat(formatedPrice), date });
-      await newValue.save();
-   };
-}
-
-export async function startObservationJob() {
-   await startBrowser();
-
-   for (let index = 0; index < assets.length; index++) {
-      const { name, symbol, currency, url, selector, separatorChar, tradingPlatform } = assets[index];
-      const assetKey = getAssetKey(name, symbol, currency);
-      const MinuteCollection = getChartDataPointCollection(assetKey, TIME_AGG_LEVEL.MINUTE);
-      createAssetEmitter(assetKey);
-
-      console.log(`start observation of : ${url} (${name}_${currency})`);
-      await startPageObservation(
-         assetKey,
-         url,
-         selector,
-         tradingPlatform,
-         storeNewPriceInDb(MinuteCollection, separatorChar),
-      );
-      await sleep(2000);
-   }
-}
-
 export async function monitoringObservationHealth() {
    try {
       setInterval(() => {
          let hasObservationIssues = false;
-         Object.keys(activePages).forEach((pageKey) => {
-            if (!activePages[pageKey].active) {
+         Object.keys(activePages).forEach((assetKey) => {
+            if (!activePages[assetKey].active) {
                hasObservationIssues = true;
             }
          });
          if (hasObservationIssues) {
             console.log(
                'activePages :>> ',
-               Object.keys(activePages).map((url) => ({
-                  ...activePages[url],
-                  intervalId: activePages[url].intervalId !== null,
+               Object.keys(activePages).map((assetKey) => ({
+                  ...activePages[assetKey],
+                  intervalId: activePages[assetKey].intervalId !== null,
                })),
             );
          }
@@ -276,24 +300,24 @@ export async function monitoringObservationHealth() {
 }
 
 function stopAllPageObservations() {
-   Object.keys(activePages).forEach((url) => {
-      stopPageObservation(url, true);
+   Object.keys(activePages).forEach((assetKey) => {
+      stopPageObservation(assetKey, true);
    });
 }
 
-export function stopPageObservation(url, pause = false) {
-   clearInterval(activePages[url].intervalId);
-   console.log('url :>> ', url);
+export function stopPageObservation(assetKey, pause = false) {
+   clearInterval(activePages[assetKey].intervalId);
+   console.log('assetKey :>> ', assetKey);
    if (pause) {
-      activePages[url] = {
+      activePages[assetKey] = {
          price: 0,
          intervalId: null,
-         selector: activePages[url].selector,
+         selector: activePages[assetKey].selector,
          url,
          active: false,
       };
    } else {
-      delete activePages[url];
+      delete activePages[assetKey];
    }
 }
 
@@ -322,14 +346,14 @@ async function restartObservations() {
    try {
       console.log('Restart observations :>> ', Object.keys(activePages).length);
       for (let index = 0; index < Object.keys(activePages).length; index++) {
-         const url = Object.keys(activePages)[index];
-         console.log('url :>> ', url);
-         console.log('activePages[url] :>> ', activePages[url]);
-         const { selector, active } = activePages[url];
+         const assetKey = Object.keys(activePages)[index];
+         console.log('assetKey :>> ', assetKey);
+         console.log('activePages[assetKey] :>> ', activePages[assetKey]);
+         const { selector, active } = activePages[assetKey];
          if (!active) {
             console.log('!active :>> ', !active);
             console.log('!ipIsBeingChanged :>> ', !ipIsBeingChanged);
-            await startPageObservation(url, selector);
+            await startPageObservation(activePages[assetKey].url, selector);
             await sleep(5000);
          }
       }
@@ -396,17 +420,17 @@ export async function test() {
          console.log('Price Gold:>> ', activePages['https://www.ls-tc.de/de/etf/52412'].price);
          console.log('Price Grth20:>> ', activePages['https://www.tradegate.de/orderbuch.php?isin=DE000ETFL037'].price);
          let hasObservationIssues = false;
-         Object.keys(activePages).forEach((pageKey) => {
-            if (!activePages[pageKey].active) {
+         Object.keys(activePages).forEach((assetKey) => {
+            if (!activePages[assetKey].active) {
                hasObservationIssues = true;
             }
          });
          if (hasObservationIssues) {
             console.log(
                'activePages :>> ',
-               Object.keys(activePages).map((url) => ({
-                  ...activePages[url],
-                  intervalId: activePages[url].intervalId !== null,
+               Object.keys(activePages).map((assetKey) => ({
+                  ...activePages[assetKey],
+                  intervalId: activePages[assetKey].intervalId !== null,
                })),
             );
          }
