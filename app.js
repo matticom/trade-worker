@@ -36,7 +36,7 @@ import moment from 'moment';
 import { EUR } from './src/constants';
 import { controlLongTermPois } from './src/controllers/DetectionController';
 import { assets } from './src/Assets';
-import { fetchPage } from './src/Test.cjs';
+import { fetchPage, testJobs } from './src/Test.cjs';
 
 const port = process.env.PORT || 8200;
 const app = express();
@@ -109,7 +109,7 @@ createInitialDbSetup(assets);
 // Observation JOBS
 // ----------------
 
-// startObservationJob();
+startObservationJob();
 
 // monitoringObservationHealth();
 
@@ -118,11 +118,16 @@ createInitialDbSetup(assets);
 
 // processHistoricalData();
 
-// try {
-//    controlLongTermPois(getAssetKey('Gold', 'GOLD', EUR));
-// } catch (error) {
-//    console.log('error :>> ', error);
-// }
+try {
+   // controlLongTermPois(getAssetKey('Gold', 'GOLD', EUR));
+} catch (error) {
+   console.log('error :>> ', error);
+}
+
+// Testing jobs
+// ---------------------------------------------------
+
+testJobs();
 
 // findAssetBySymbol('BTC').then((res) => console.log('res :>> ', res));
 

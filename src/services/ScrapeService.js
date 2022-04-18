@@ -10,6 +10,7 @@ import {
 import { getAssetKey, getChartDataPointCollection } from '../db/ModelService';
 import { tradingPlatforms } from '../TradePlatforms';
 import { assets } from '../Assets';
+import { createAssetEmitter, sendRefresh } from '../jobs/AssetEmitter';
 
 const valueRegex = /[^0-9]*([0-9,.]*)[^0-9]*/;
 
@@ -118,7 +119,7 @@ export async function getProxyIPs() {
    // }, 10000);
 }
 
-export async function startPageObservation(url, selector, platform, dbStoreFn) {
+export async function startPageObservation(assetKey, url, selector, platform, dbStoreFn) {
    try {
       // console.log(`start observation of : ${url}`);
       const page = await browser.newPage();
@@ -131,11 +132,12 @@ export async function startPageObservation(url, selector, platform, dbStoreFn) {
       await page.waitForSelector(selector);
       const elementHandle = await page.$(selector);
 
-      activePages[url] = { price: 0, intervalId: null, selector, url, active: true };
+      activePages[url] = { assetKey, price: 0, intervalId: null, selector, url, active: true };
       activePages[url].intervalId = setInterval(async () => {
          try {
             await sleep(Math.random() * ASSET_POLLING_FUZZY_LENGTH_MSEC);
             await fetchPrice(url, page, elementHandle, platform, dbStoreFn);
+            sendRefresh(assetKey);
          } catch (error) {
             console.log('fetch error :>> ', error);
          }
@@ -231,11 +233,18 @@ export async function startObservationJob() {
 
    for (let index = 0; index < assets.length; index++) {
       const { name, symbol, currency, url, selector, separatorChar, tradingPlatform } = assets[index];
-      const assetChartName = getAssetKey(name, symbol, currency);
-      const MinuteCollection = getChartDataPointCollection(assetChartName, TIME_AGG_LEVEL.MINUTE);
+      const assetKey = getAssetKey(name, symbol, currency);
+      const MinuteCollection = getChartDataPointCollection(assetKey, TIME_AGG_LEVEL.MINUTE);
+      createAssetEmitter(assetKey);
 
       console.log(`start observation of : ${url} (${name}_${currency})`);
-      await startPageObservation(url, selector, tradingPlatform, storeNewPriceInDb(MinuteCollection, separatorChar));
+      await startPageObservation(
+         assetKey,
+         url,
+         selector,
+         tradingPlatform,
+         storeNewPriceInDb(MinuteCollection, separatorChar),
+      );
       await sleep(2000);
    }
 }
