@@ -16,9 +16,8 @@ router.get('/', async (req, res) => {
    res.status(200).send({ data: collections });
 });
 
-router.post('/charts', async (req, res) => {
-   const assetKey = req.body.assetKey; // using params would be better but ([A-Za-z0-9_]) constraint
-   console.log('assetKey :>> ', assetKey);
+router.get('/:assetKey/charts', async (req, res) => {
+   const assetKey = decodeURIComponent(req.params.assetKey); // using params would be better but ([A-Za-z0-9_]) constraint
    const assetTimeAggCharts = await AssetTimeAggChartCollection.find({ name: assetKey });
    res.status(200).send({ data: assetTimeAggCharts });
 });
@@ -31,9 +30,9 @@ router.post('/', async (req, res) => {
    res.status(200).send();
 });
 
-router.post('/find', async (req, res) => {
-   const { searchTerm, region } = req.body;
-   const result = await findAsset(searchTerm, region);
+router.get('/find', async (req, res) => {
+   const { searchTerm, region } = req.query;
+   const result = await findAsset(decodeURIComponent(searchTerm), region);
    res.status(200).send({ data: result });
 });
 
@@ -48,14 +47,14 @@ router.get('/recordings', async (req, res) => {
    res.status(200).send(activeRecordings);
 });
 
-router.post('/recordings/start', async (req, res) => {
-   const { assetKey } = req.body;
+router.post('/recordings/:assetKey/start', async (req, res) => {
+   const assetKey = decodeURIComponent(req.params.assetKey);
    await startAssetPriceRecording(assetKey);
    res.status(200).send();
 });
 
-router.post('/recordings/stop', async (req, res) => {
-   const { assetKey } = req.body;
+router.post('/recordings/:assetKey/stop', async (req, res) => {
+   const assetKey = decodeURIComponent(req.params.assetKey);
    stopAssetPriceRecording(assetKey);
    res.status(200).send();
 });
