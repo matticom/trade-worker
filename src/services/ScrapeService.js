@@ -1,5 +1,6 @@
 import { sleep } from '../tools/General';
-import moment from 'moment';
+import moment from 'moment-timezone';
+import { TZ_BERLIN } from '../constants';
 import {
    ASSET_POLLING_FUZZY_LENGTH_MSEC,
    ASSET_POLLING_INTERVAL_LENGTH_MSEC,
@@ -11,6 +12,8 @@ import { getAssetByKey, getAssetKey, getChartDataPointCollection } from '../db/M
 import { assets } from '../Assets';
 import { createAssetEmitter, removeAllJobFromAssetEmitter, sendRefresh } from '../jobs/AssetEmitter';
 import { AssetCollection, TradingPlatformCollection } from '../db/schemas';
+import { reportError } from '../errors/ErrorReporter';
+import { isHoliday } from '../api/holidays';
 
 const valueRegex = /[^0-9]*([0-9,.]*)[^0-9]*/;
 
@@ -60,6 +63,8 @@ let retry = 0;
 let MAX_RETRIES = 5;
 let ipIsBeingChanged = false;
 let serviceStopped = false;
+
+let counter = 0;
 
 // export async function getPageHTML(pageUrl) {
 
@@ -141,24 +146,26 @@ export async function startObservationJob() {
 }
 
 export async function startAssetPriceRecording(assetKey) {
-   if (browser === null) {
-      await startBrowser();
-   }
+   try {
+      if (browser === null) {
+         await startBrowser();
+      }
 
-   const { url, selector, separatorChar, tradingPlatform } = await getAssetByKey(assetKey);
-   const MinuteCollection = getChartDataPointCollection(assetKey, TIME_AGG_LEVEL.MINUTE);
-   createAssetEmitter(assetKey);
+      const { url, selector, separatorChar, tradingPlatform } = await getAssetByKey(assetKey);
+      const MinuteCollection = getChartDataPointCollection(assetKey, TIME_AGG_LEVEL.MINUTE);
+      createAssetEmitter(assetKey);
 
-   await startPageObservation(
-      assetKey,
-      url,
-      selector,
-      tradingPlatform,
-      storeNewPriceInDb(MinuteCollection, separatorChar),
-   );
+      await startPageObservation(
+         assetKey,
+         url,
+         selector,
+         tradingPlatform,
+         storeNewPriceInDb(MinuteCollection, separatorChar),
+      );
+   } catch (error) {}
 }
 
-export async function stopAssetPriceRecording(assetKey) {
+export function stopAssetPriceRecording(assetKey) {
    removeAllJobFromAssetEmitter(assetKey);
    stopPageObservation(assetKey);
 }
@@ -195,11 +202,14 @@ export async function startPageObservation(assetKey, url, selector, platform, db
             await fetchPrice(assetKey, url, page, elementHandle, platform, dbStoreFn);
             sendRefresh(assetKey);
          } catch (error) {
-            console.log('fetch error :>> ', error);
+            stopPageObservation(assetKey);
+            console.log('Fetching Error would have send an email: ', error);
+            // reportError(error, assetKey);
          }
       }, ASSET_POLLING_INTERVAL_LENGTH_MSEC);
    } catch (error) {
-      console.log('another error :>> ', error);
+      error.message = `Asset ${assetKey} observation error: ${error}`;
+      throw error;
    }
 }
 
@@ -207,14 +217,14 @@ async function fetchPrice(assetKey, url, page, elementHandle, platform, dbStoreF
    try {
       if (await shouldAskForPrice(platform)) {
          // if (true) {
-         console.log(`new fetch for ${url} :>> `, moment().format('HH:mm:ss SSS'));
+         console.log(`new fetch for ${url} :>> `, moment().tz(TZ_BERLIN).format('HH:mm:ss SSS'));
          // await page.reload();
          const unformatedPrice = await page.evaluate((selected) => selected.innerHTML, elementHandle);
          // console.log('unformatedPrice :>> ', unformatedPrice);
          const foundValue = unformatedPrice.match(valueRegex);
          const price = foundValue[1];
          console.log('price :>> ', price);
-         const date = moment().toDate();
+         const date = moment().tz(TZ_BERLIN).toDate();
          activePages[assetKey].price = price;
          activePages[assetKey].date = date;
          if (dbStoreFn !== undefined) {
@@ -225,6 +235,7 @@ async function fetchPrice(assetKey, url, page, elementHandle, platform, dbStoreF
       }
    } catch (error) {
       console.log('emitter error :>> ', error);
+      throw error;
       // stopAllPageObservations();
       // console.log('before stop :>> ', ipIsBeingChanged);
       // if (!ipIsBeingChanged) {
@@ -239,11 +250,17 @@ async function fetchPrice(assetKey, url, page, elementHandle, platform, dbStoreF
 export async function shouldAskForPrice(platformName) {
    // console.log('platform :>> ', platformName);
    const platform = await TradingPlatformCollection.findOne({ name: platformName });
+   if (platform === null) {
+      throw `Platform ${platformName} is unknown!`;
+   }
+
    const { tradeWeekend, tradeAnyTime } = platform;
    if (tradeAnyTime) return true;
 
-   const now = moment();
-   console.log('now :>> ', now.format());
+   const now = moment().tz(TZ_BERLIN);
+
+   if (await isHoliday(now)) return false;
+
    const dayOfWeek = now.isoWeekday();
    const dateString = now.format('DD.MM.YYYY');
 
@@ -256,21 +273,21 @@ export async function shouldAskForPrice(platformName) {
          const { tradeStartSat, tradeEndSat, tradeStartSun, tradeEndSun } = platform;
          if (dayOfWeek === 6) {
             // Sat
-            const momentTradeStartSat = moment(`${dateString} ${tradeStartSat}`, 'DD.MM.YYYY HH:mm');
-            const momentTradeEndSat = moment(`${dateString} ${tradeEndSat}`, 'DD.MM.YYYY HH:mm');
+            const momentTradeStartSat = moment.tz(`${dateString} ${tradeStartSat}`, 'DD.MM.YYYY HH:mm', TZ_BERLIN);
+            const momentTradeEndSat = moment.tz(`${dateString} ${tradeEndSat}`, 'DD.MM.YYYY HH:mm', TZ_BERLIN);
             return now.isSameOrAfter(momentTradeStartSat) && now.isSameOrBefore(momentTradeEndSat);
          } else {
             // Sun
-            const momentTradeStartSun = moment(`${dateString} ${tradeStartSun}`, 'DD.MM.YYYY HH:mm');
-            const momentTradeEndSun = moment(`${dateString} ${tradeEndSun}`, 'DD.MM.YYYY HH:mm');
+            const momentTradeStartSun = moment.tz(`${dateString} ${tradeStartSun}`, 'DD.MM.YYYY HH:mm', TZ_BERLIN);
+            const momentTradeEndSun = moment.tz(`${dateString} ${tradeEndSun}`, 'DD.MM.YYYY HH:mm', TZ_BERLIN);
             return now.isSameOrAfter(momentTradeStartSun) && now.isSameOrBefore(momentTradeEndSun);
          }
       }
    } else {
       // Mon-Fri
       const { tradeStartMonFri, tradeEndMonFri } = platform;
-      const momentTradeStart = moment(`${dateString} ${tradeStartMonFri}`, 'DD.MM.YYYY HH:mm');
-      const momentTradeEnd = moment(`${dateString} ${tradeEndMonFri}`, 'DD.MM.YYYY HH:mm');
+      const momentTradeStart = moment.tz(`${dateString} ${tradeStartMonFri}`, 'DD.MM.YYYY HH:mm', TZ_BERLIN);
+      const momentTradeEnd = moment.tz(`${dateString} ${tradeEndMonFri}`, 'DD.MM.YYYY HH:mm', TZ_BERLIN);
       return now.isSameOrAfter(momentTradeStart) && now.isSameOrBefore(momentTradeEnd);
    }
 }

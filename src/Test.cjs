@@ -2,7 +2,9 @@ const { assets } = require('./Assets');
 const { getAssetKey } = require('./db/ModelService');
 const { addJob, removeAllAssetJobs, removeAssetJob } = require('./jobs/jobs');
 const { sleep } = require('./tools/General');
-const moment = require('moment');
+const moment = require('moment-timezone');
+const { TZ_BERLIN } = require('./constants');
+const { getHolidays, isHoliday } = require('./api/holidays');
 
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
@@ -41,7 +43,25 @@ async function testJobs() {
    removeAssetJob(job2);
 }
 
+async function testHolidays() {
+   // convert from local to tz
+   // => moment[()].tz(timezone)
+
+   // define date as in the tz defined
+   // => moment.tz(...moment constructor, timezone)
+
+   const nowAtAnyPlaceTest = moment.utc().tz(TZ_BERLIN);
+   const nowLocalTest = moment().tz(TZ_BERLIN);
+   console.log('nowAtAnyPlaceTest :>> ', nowAtAnyPlaceTest.format());
+   console.log('nowLocalTest :>> ', nowLocalTest.format());
+   const officeHourTest = moment.tz(`01.02.2022 15:11`, 'DD.MM.YYYY HH:mm', TZ_BERLIN);
+   console.log('officeHourTest :>> ', officeHourTest.format());
+   console.log('res :>> ', await getHolidays());
+   console.log('isHoliday :>> ', await isHoliday(moment('2022-05-01 15:11').tz(TZ_BERLIN)));
+}
+
 module.exports = {
    fetchPage,
    testJobs,
+   testHolidays,
 };

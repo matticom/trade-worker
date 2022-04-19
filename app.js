@@ -41,7 +41,7 @@ import moment from 'moment';
 import { EUR } from './src/constants';
 import { controlLongTermPois } from './src/controllers/DetectionController';
 import { assets } from './src/Assets';
-import { fetchPage, testJobs } from './src/Test.cjs';
+import { fetchPage, testJobs, testHolidays } from './src/Test.cjs';
 
 const port = process.env.PORT || 8200;
 const app = express();
@@ -107,6 +107,8 @@ db.once('open', function () {
 
 // const rawData = sourceData.filter((data) => data.date >= start && data.date <= end);
 
+// testHolidays();
+
 createInitialDbSetup();
 
 // startAggregationService();
@@ -167,6 +169,10 @@ testJobs();
 //    console.log('historicalData :>> ', historicalData);
 
 // });
+
+app.use('/status', function (req, res) {
+   return res.status(200).send('Handler is still missing');
+});
 
 app.use('/assets', AssetRouter);
 app.use('/jobs', JobRouter);
