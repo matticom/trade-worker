@@ -1,5 +1,6 @@
 import express from 'express';
-import moment from 'moment';
+import moment from 'moment-timezone';
+import { TZ_BERLIN } from '../constants';
 
 import { getCollections } from '../db/mongoDb';
 import { AssetCollection } from '../db/schemas';
@@ -32,8 +33,8 @@ router.post('/start', async (req, res) => {
          () => {
             console.log('external short term job :>> ');
          },
-         moment.utc(start),
-         end !== undefined ? moment.utc(end) : undefined,
+         moment.tz(start, TZ_BERLIN),
+         end !== undefined ? moment.tz(end, TZ_BERLIN) : undefined,
       );
    }
    console.log('job :>> ', req.body);

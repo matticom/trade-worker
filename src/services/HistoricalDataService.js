@@ -1,5 +1,5 @@
-import moment from 'moment';
-import { EUR, TIME_AGG_LEVEL } from '../constants';
+import moment from 'moment-timezone';
+import { EUR, TIME_AGG_LEVEL, TZ_BERLIN } from '../constants';
 import { getAssetKey, getChartDataPointCollection, getChartDataPointName } from '../db/ModelService';
 import { db } from '../db/mongoDb';
 
@@ -14,17 +14,26 @@ export async function processHistoricalData(assetName = 'Gold', assetSymbol = 'G
 
    // remove strange last value
    if (quotes.length > 1) {
-      if (moment.unix(quotes[quotes.length - 1].date).hours() !== moment.unix(quotes[quotes.length - 2].date).hours()) {
+      if (
+         moment
+            .unix(quotes[quotes.length - 1].date)
+            .tz(TZ_BERLIN)
+            .hours() !==
+         moment
+            .unix(quotes[quotes.length - 2].date)
+            .tz(TZ_BERLIN)
+            .hours()
+      ) {
          quotes.pop();
       }
    }
-   // console.log('quotes[l] :>> ', moment.unix(quotes[quotes.length - 1].date).format());
-   // console.log('quotes[l-1] :>> ', moment.unix(quotes[quotes.length - 2].date).format());
-   // console.log('quotes[l-2] :>> ', moment.unix(quotes[quotes.length - 3].date).format());
+   // console.log('quotes[l] :>> ', moment.unix(quotes[quotes.length - 1].date).tz(TZ_BERLIN).format());
+   // console.log('quotes[l-1] :>> ', moment.unix(quotes[quotes.length - 2].date).tz(TZ_BERLIN).format());
+   // console.log('quotes[l-2] :>> ', moment.unix(quotes[quotes.length - 3].date).tz(TZ_BERLIN).format());
 
    let newDocuments = quotes.map((quote) => ({
       value: quote.price,
-      date: moment.unix(quote.date).startOf('day').toDate(),
+      date: moment.unix(quote.date).tz(TZ_BERLIN).startOf('day').toDate(),
    }));
 
    const assetKey = getAssetKey(assetName, assetSymbol, currency);
@@ -33,7 +42,7 @@ export async function processHistoricalData(assetName = 'Gold', assetSymbol = 'G
    const latestDocArray = await DayCollection.find().sort({ date: -1 }).limit(1);
    if (latestDocArray.length !== 0) {
       const latestDoc = latestDocArray[0];
-      newDocuments = newDocuments.filter((doc) => moment(doc.date).isAfter(moment(latestDoc.date)));
+      newDocuments = newDocuments.filter((doc) => moment(doc.date).tz(TZ_BERLIN).isAfter(moment(latestDoc.date)));
    }
 
    if (newDocuments.length > 0) {

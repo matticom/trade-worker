@@ -55,3 +55,5 @@ export const TIME_AGG_LEVEL = {
 export const POSTFIX_MODEL_MAP = {};
 
 export const TZ_BERLIN = 'Europe/Berlin';
+
+export const STD_DATE_FORMAT = 'YYYY-MM-DD HH:mm';

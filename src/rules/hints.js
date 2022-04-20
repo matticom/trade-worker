@@ -1,4 +1,5 @@
-import moment from 'moment';
+import moment from 'moment-timezone';
+
 import {
    DETECTION_TIMEOUT,
    PEAK_HIGH,
@@ -10,7 +11,9 @@ import {
    PLATEAU_TOLERANCE_PERCENT,
    RECENTLY_DROPPED_PERCENT,
    RECENTLY_TIME_SPAN_DAYS,
+   STD_DATE_FORMAT,
    THRESHOLD,
+   TZ_BERLIN,
 } from '../constants';
 
 export function recentlyDropped(data, currentIdx) {
@@ -26,12 +29,12 @@ export function recentlyDropped(data, currentIdx) {
    // console.log('maxValue :>> ', maxValue);
    const dropValue = 100 - (100 * currentValue) / maxValue;
    console.log('dropValue :>> ', dropValue);
-   console.log('current date :>> ', moment.unix(data[currentIdx].date).format('D. MMM YYYY'));
+   console.log('current date :>> ', moment.unix(data[currentIdx].date).tz(TZ_BERLIN).format('D. MMM YYYY'));
    const dpThresholdReached = dropValue > RECENTLY_DROPPED_PERCENT;
    if (dpThresholdReached) {
       console.log(
          `!!!! Drop of more than ${RECENTLY_DROPPED_PERCENT}:>> `,
-         moment.unix(data[currentIdx].date).format('D. MMM YYYY'),
+         moment.unix(data[currentIdx].date).tz(TZ_BERLIN).format('D. MMM YYYY'),
       );
    }
 }
@@ -45,7 +48,7 @@ export function staticPercentThresholds(data, thresholdArray) {
       {
          threshold: 0,
          type: 'ref',
-         dateStr: moment.unix(data[0].date).format('YYYY-MM-DD'),
+         dateStr: moment.unix(data[0].date).tz(TZ_BERLIN).format(STD_DATE_FORMAT),
          date: data[0].date,
          value: reference,
       },
@@ -68,7 +71,7 @@ export function staticPercentThresholds(data, thresholdArray) {
                const entry = {
                   threshold,
                   type: THRESHOLD,
-                  dateStr: moment.unix(date).format('YYYY-MM-DD'),
+                  dateStr: moment.unix(date).tz(TZ_BERLIN).format(STD_DATE_FORMAT),
                   date,
                   value,
                };
@@ -88,7 +91,7 @@ export function staticPercentThresholds(data, thresholdArray) {
                const entry = {
                   threshold: threshold * -1,
                   type: THRESHOLD,
-                  dateStr: moment.unix(date).format('YYYY-MM-DD'),
+                  dateStr: moment.unix(date).tz(TZ_BERLIN).format(STD_DATE_FORMAT),
                   date,
                   value,
                };
@@ -131,7 +134,7 @@ export function peakPlateauDetection(dayData, params = defaultParams) {
 
    dayData.forEach((quote, idx, dataArray) => {
       const { value } = quote;
-      // console.log('\n------> date :>> ', moment.unix(dataArray[idx].date).format('YYYY-MM-DD'));
+      // console.log('\n------> date :>> ', moment.unix(dataArray[idx].date).tz(TZ_BERLIN).format(STD_DATE_FORMAT));
       // console.log('value :>> ', value);
       // console.log(`currentPeak (${negativeSlope ? 'low' : 'high'}):>> `, currentPeak);
       // console.log('peakAcknowledgeCounter :>> ', peakAcknowledgeCounter);
@@ -178,7 +181,7 @@ export function peakPlateauDetection(dayData, params = defaultParams) {
                positiveSlope = false;
                const criteria =
                   peakAcknowledgeCounter > params.peakDetectionTimeout ? 'DETECTION_TIMEOUT' : 'PERCENTAGE';
-               const detectionDate = moment.unix(quote.date).format('YYYY-MM-DD');
+               const detectionDate = moment.unix(quote.date).tz(TZ_BERLIN).format(STD_DATE_FORMAT);
                foundPeakPlateau.push({ ...currentPeak, type: PEAK_HIGH, criteria, detectionDate });
                // console.log('----- // ------ found high peak :>> ', { ...currentPeak });
                peakAcknowledgeCounter = 0;
@@ -198,7 +201,7 @@ export function peakPlateauDetection(dayData, params = defaultParams) {
                positiveSlope = true;
                const criteria =
                   peakAcknowledgeCounter > params.peakDetectionTimeout ? 'DETECTION_TIMEOUT' : 'PERCENTAGE';
-               const detectionDate = moment.unix(quote.date).format('YYYY-MM-DD');
+               const detectionDate = moment.unix(quote.date).tz(TZ_BERLIN).format(STD_DATE_FORMAT);
                foundPeakPlateau.push({ ...currentPeak, type: PEAK_LOW, criteria, detectionDate });
                // console.log('----- // ------ found low peak :>> ', { ...currentPeak });
                peakAcknowledgeCounter = 0;
@@ -215,10 +218,11 @@ export function peakPlateauDetection(dayData, params = defaultParams) {
    return foundPeakPlateau.map(({ value, date, type, criteria, detectionDate }) => ({
       value,
       date,
-      dateStr: moment.unix(date).format('YYYY-MM-DD'),
+      dateStr: moment.unix(date).tz(TZ_BERLIN).format(STD_DATE_FORMAT),
       type,
       criteria: criteria === undefined ? 'DEFAULT' : criteria,
-      detectionDate: detectionDate === undefined ? moment.unix(date).format('YYYY-MM-DD') : detectionDate,
+      detectionDate:
+         detectionDate === undefined ? moment.unix(date).tz(TZ_BERLIN).format(STD_DATE_FORMAT) : detectionDate,
    }));
 }
 

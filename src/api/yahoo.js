@@ -1,5 +1,6 @@
 import axios from 'axios';
 import moment from 'moment-timezone';
+import { TZ_BERLIN } from '../constants';
 
 const credentials = {
    matticom: {
@@ -89,7 +90,7 @@ export async function getLastPrice(symbols, region = 'DE') {
       ({ symbol, currency, regularMarketTime, regularMarketPrice, fullExchangeName }) => ({
          symbol,
          currency,
-         date: moment.unix(regularMarketTime).tz('Europe/Berlin').format(),
+         date: moment.unix(regularMarketTime).tz(TZ_BERLIN).format(),
          price: regularMarketPrice,
          fullName: fullExchangeName,
       }),

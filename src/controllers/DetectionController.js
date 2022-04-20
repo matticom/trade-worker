@@ -1,5 +1,6 @@
-import moment from 'moment';
-import Mongoose from 'mongoose';
+import moment from 'moment-timezone';
+import { TZ_BERLIN } from '../constants';
+
 import { EUR, PEAK_HIGH, PEAK_LOW, TIME_AGG_LEVEL } from '../constants';
 import { getAssetTimeAggChart, getChartDataPointCollection, getChartDataPointName } from '../db/ModelService';
 import { getChartDataPoints, getLatestQuote } from '../db/queries';
@@ -56,7 +57,7 @@ export async function controlLongTermPois(assetKey) {
       console.log('date :>> ', date);
       const newPeak = new PoiCollection({
          value,
-         date: moment.unix(date).toDate(),
+         date: moment.unix(date).tz(TZ_BERLIN).toDate(), // TODO: right date?
          type,
          chartName,
          criteria,

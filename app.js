@@ -37,8 +37,8 @@ import { createInitialDbSetup, createInitialModelsAndData, getAssetKey } from '.
 import { startAggregationService } from './src/services/AggregationService';
 
 import { sendEmail } from './src/services/EmailNotification';
-import moment from 'moment';
-import { EUR } from './src/constants';
+import moment from 'moment-timezone';
+import { EUR, TZ_BERLIN } from './src/constants';
 import { controlLongTermPois } from './src/controllers/DetectionController';
 import { assets } from './src/Assets';
 import { fetchPage, testJobs, testHolidays } from './src/Test.cjs';

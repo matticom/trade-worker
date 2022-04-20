@@ -2,8 +2,9 @@ import _ from 'lodash';
 import roundTo from 'round-to';
 import cron from 'cron';
 import { db } from '../db/mongoDb';
-import moment from 'moment';
-import { HOUR_RETENTION_IN_DAYS, MINUTE_RETENTION_IN_DAYS, TIME_AGG_LEVEL } from '../constants';
+import moment from 'moment-timezone';
+
+import { HOUR_RETENTION_IN_DAYS, MINUTE_RETENTION_IN_DAYS, TIME_AGG_LEVEL, TZ_BERLIN } from '../constants';
 import { getAssetKey, getChartDataPointCollection, getChartDataPointName } from '../db/ModelService';
 import { assets } from '../Assets';
 
@@ -11,8 +12,8 @@ async function aggregateLastHour(assetKey) {
    const MinuteCollection = getChartDataPointCollection(assetKey, TIME_AGG_LEVEL.MINUTE);
    const HourCollection = getChartDataPointCollection(assetKey, TIME_AGG_LEVEL.HOUR);
 
-   const startLastHour = moment().subtract(1, 'hour').startOf('hour');
-   const startCurrentHour = moment().startOf('hour');
+   const startLastHour = moment().tz(TZ_BERLIN).subtract(1, 'hour').startOf('hour');
+   const startCurrentHour = moment().tz(TZ_BERLIN).startOf('hour');
 
    const quotes = await MinuteCollection.find({
       date: {
@@ -32,8 +33,8 @@ async function aggregateLastDay(assetKey) {
    const HourCollection = getChartDataPointCollection(assetKey, TIME_AGG_LEVEL.HOUR);
    const DayCollection = getChartDataPointCollection(assetKey, TIME_AGG_LEVEL.DAY);
 
-   const startLastDay = moment().subtract(1, 'day').startOf('day');
-   const startCurrentDay = moment().startOf('day');
+   const startLastDay = moment().tz(TZ_BERLIN).subtract(1, 'day').startOf('day');
+   const startCurrentDay = moment().tz(TZ_BERLIN).startOf('day');
 
    const quotes = await HourCollection.find({
       date: {
@@ -50,14 +51,14 @@ async function aggregateLastDay(assetKey) {
 }
 
 async function deleteOldMinutes(assetKey) {
-   const lastRetainDate = moment().startOf('hour').subtract(MINUTE_RETENTION_IN_DAYS, 'days');
+   const lastRetainDate = moment().tz(TZ_BERLIN).startOf('hour').subtract(MINUTE_RETENTION_IN_DAYS, 'days');
    await db
       .collection(getChartDataPointName(assetKey, TIME_AGG_LEVEL.MINUTE))
       .deleteMany({ date: { $lt: lastRetainDate.toDate() } });
 }
 
 async function deleteOldHours(assetKey) {
-   const lastRetainDate = moment().startOf('day').subtract(HOUR_RETENTION_IN_DAYS, 'days');
+   const lastRetainDate = moment().tz(TZ_BERLIN).startOf('day').subtract(HOUR_RETENTION_IN_DAYS, 'days');
    await db
       .collection(getChartDataPointName(assetKey, TIME_AGG_LEVEL.HOUR))
       .deleteMany({ date: { $lt: lastRetainDate.toDate() } });

@@ -1,4 +1,5 @@
-import moment from 'moment';
+import moment from 'moment-timezone';
+import { TZ_BERLIN } from '../constants';
 import { addJobToAssetEmitter, removeAllJobFromAssetEmitter, removeJobFromAssetEmitter } from './AssetEmitter';
 
 export const jobRegistry = {};
@@ -62,7 +63,7 @@ class Job {
    createJobEndDetectionHandler(job) {
       return () => {
          if (job.getEnd() !== undefined) {
-            const now = moment.utc();
+            const now = moment().tz(TZ_BERLIN);
             if (now.isAfter(job.getEnd())) {
                removeAssetJob(job);
                removeJobFromAssetEmitter(job);
