@@ -1,13 +1,9 @@
 import express from 'express';
 import { findAsset } from '../api/yahoo';
+import { shouldAskForPrice } from '../controllers/PlatformController';
 import { createAsset, createAssetTimeAggCharts } from '../db/ModelService';
 import { AssetCollection, AssetTimeAggChartCollection } from '../db/schemas';
-import {
-   activePages,
-   shouldAskForPrice,
-   startAssetPriceRecording,
-   stopAssetPriceRecording,
-} from '../services/ScrapeService';
+import { activePages, startAssetPriceRecording, stopAssetPriceRecording } from '../services/ScrapeService';
 
 const router = express.Router({ mergeParams: true });
 

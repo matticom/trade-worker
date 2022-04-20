@@ -39,7 +39,7 @@ import { startAggregationService } from './src/services/AggregationService';
 import { sendEmail } from './src/services/EmailNotification';
 import moment from 'moment-timezone';
 import { EUR, TZ_BERLIN } from './src/constants';
-import { controlLongTermPois } from './src/controllers/DetectionController';
+import { controlLongTermPois } from './src/signalFinding/LongTerm';
 import { assets } from './src/Assets';
 import { fetchPage, testJobs, testHolidays } from './src/Test.cjs';
 
