@@ -1,0 +1,1042 @@
+[
+  {
+    "Bloomberg Exchange Code": "AF",
+    "Bloomberg Composite Code": "AR",
+    "Country": "Argentina",
+    "Description": "Bolsa de Comercio de Buenos Aires",
+    "ISO MIC": "XBUE",
+    "Google Prefix": "",
+    "EOD code": "BA",
+    "# of Stocks": 12
+  },
+  {
+    "Bloomberg Exchange Code": "AO",
+    "Bloomberg Composite Code": "AU",
+    "Country": "Australia",
+    "Description": "National Stock Exchange of Australia",
+    "ISO MIC": "XNEC",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 1
+  },
+  {
+    "Bloomberg Exchange Code": "AT",
+    "Bloomberg Composite Code": "AU",
+    "Country": "Australia",
+    "Description": "Asx - All Markets",
+    "ISO MIC": "XASX",
+    "Google Prefix": "ASX",
+    "EOD code": "AU",
+    "# of Stocks": 920
+  },
+  {
+    "Bloomberg Exchange Code": "AV",
+    "Bloomberg Composite Code": "",
+    "Country": "Austria",
+    "Description": "Wiener Boerse Ag",
+    "ISO MIC": "XWBO",
+    "Google Prefix": "VIE",
+    "EOD code": "VI",
+    "# of Stocks": 38
+  },
+  {
+    "Bloomberg Exchange Code": "BI",
+    "Bloomberg Composite Code": "",
+    "Country": "Bahrain",
+    "Description": "Bahrain Bourse",
+    "ISO MIC": "XBAH",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 4
+  },
+  {
+    "Bloomberg Exchange Code": "BD",
+    "Bloomberg Composite Code": "",
+    "Country": "Bangladesh",
+    "Description": "Dhaka Stock Exchange Ltd",
+    "ISO MIC": "XDHA",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 18
+  },
+  {
+    "Bloomberg Exchange Code": "BB",
+    "Bloomberg Composite Code": "",
+    "Country": "Belgium",
+    "Description": "Nyse Euronext - Euronext Brussels",
+    "ISO MIC": "XBRU",
+    "Google Prefix": "EBR",
+    "EOD code": "BR",
+    "# of Stocks": 77
+  },
+  {
+    "Bloomberg Exchange Code": "BS",
+    "Bloomberg Composite Code": "BZ",
+    "Country": "Brazil",
+    "Description": "XBSP",
+    "ISO MIC": "BVMF",
+    "Google Prefix": "BVMF",
+    "EOD code": "SA",
+    "# of Stocks": 387
+  },
+  {
+    "Bloomberg Exchange Code": "CF",
+    "Bloomberg Composite Code": "CN",
+    "Country": "Canada",
+    "Description": "Canadian Securities Exchange",
+    "ISO MIC": "XCNQ",
+    "Google Prefix": "",
+    "EOD code": "CN",
+    "# of Stocks": 71
+  },
+  {
+    "Bloomberg Exchange Code": "CT",
+    "Bloomberg Composite Code": "CN",
+    "Country": "Canada",
+    "Description": "Toronto Stock Exchange",
+    "ISO MIC": "XTSE",
+    "Google Prefix": "TSE",
+    "EOD code": "TO",
+    "# of Stocks": 489
+  },
+  {
+    "Bloomberg Exchange Code": "CV",
+    "Bloomberg Composite Code": "CN",
+    "Country": "Canada",
+    "Description": "TSX Venture Exchange",
+    "ISO MIC": "XTSX",
+    "Google Prefix": "",
+    "EOD code": "V",
+    "# of Stocks": 152
+  },
+  {
+    "Bloomberg Exchange Code": "QF",
+    "Bloomberg Composite Code": "CN",
+    "Country": "Canada",
+    "Description": "NEO Exchange",
+    "ISO MIC": "NEOE",
+    "Google Prefix": "",
+    "EOD code": "NEO",
+    "# of Stocks": 4
+  },
+  {
+    "Bloomberg Exchange Code": "CC",
+    "Bloomberg Composite Code": "CI",
+    "Country": "Chile",
+    "Description": "Santiago Stock Exchange",
+    "ISO MIC": "XSGO",
+    "Google Prefix": "",
+    "EOD code": "SN",
+    "# of Stocks": 70
+  },
+  {
+    "Bloomberg Exchange Code": "CG",
+    "Bloomberg Composite Code": "CH",
+    "Country": "China",
+    "Description": "Shanghai Stock Exchange",
+    "ISO MIC": "XSHG",
+    "Google Prefix": "SHA",
+    "EOD code": "SHG",
+    "# of Stocks": "1,257"
+  },
+  {
+    "Bloomberg Exchange Code": "CS",
+    "Bloomberg Composite Code": "CH",
+    "Country": "China",
+    "Description": "Shenzhen Stock Exchange",
+    "ISO MIC": "XSHE",
+    "Google Prefix": "SHE",
+    "EOD code": "SHE",
+    "# of Stocks": "1,788"
+  },
+  {
+    "Bloomberg Exchange Code": "CX",
+    "Bloomberg Composite Code": "CB",
+    "Country": "Colombia",
+    "Description": "Bolsa De Valores De Colombia",
+    "ISO MIC": "XBOG",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 33
+  },
+  {
+    "Bloomberg Exchange Code": "ZA",
+    "Bloomberg Composite Code": "CZ",
+    "Country": "Croatia",
+    "Description": "Zagreb Stock Exchange",
+    "ISO MIC": "XZAG",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 1
+  },
+  {
+    "Bloomberg Exchange Code": "CY",
+    "Bloomberg Composite Code": "",
+    "Country": "Cyprus",
+    "Description": "Cyprus Stock Exchange",
+    "ISO MIC": "XCYS",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 1
+  },
+  {
+    "Bloomberg Exchange Code": "CK",
+    "Bloomberg Composite Code": "CP",
+    "Country": "Czech Republic",
+    "Description": "Prague Stock Exchange",
+    "ISO MIC": "XPRA",
+    "Google Prefix": "PRG",
+    "EOD code": "",
+    "# of Stocks": 10
+  },
+  {
+    "Bloomberg Exchange Code": "DC",
+    "Bloomberg Composite Code": "",
+    "Country": "Denmark",
+    "Description": "Omx Nordic Exchange Copenhagen A/S",
+    "ISO MIC": "XCSE",
+    "Google Prefix": "CPH",
+    "EOD code": "CO",
+    "# of Stocks": 69
+  },
+  {
+    "Bloomberg Exchange Code": "EC",
+    "Bloomberg Composite Code": "EY",
+    "Country": "Egypt",
+    "Description": "Egyptian Exchange",
+    "ISO MIC": "XCAI",
+    "Google Prefix": "CAI",
+    "EOD code": "",
+    "# of Stocks": 33
+  },
+  {
+    "Bloomberg Exchange Code": "FH",
+    "Bloomberg Composite Code": "",
+    "Country": "Finland",
+    "Description": "Nasdaq Omx Helsinki Ltd.",
+    "ISO MIC": "XHEL",
+    "Google Prefix": "HEL",
+    "EOD code": "HE",
+    "# of Stocks": 82
+  },
+  {
+    "Bloomberg Exchange Code": "FP",
+    "Bloomberg Composite Code": "",
+    "Country": "France",
+    "Description": "Euronext Paris",
+    "ISO MIC": "XPAR",
+    "Google Prefix": "EPA",
+    "EOD code": "PA",
+    "# of Stocks": 248
+  },
+  {
+    "Bloomberg Exchange Code": "BQ",
+    "Bloomberg Composite Code": "GR",
+    "Country": "Germany",
+    "Description": "Equiduct Trading",
+    "ISO MIC": "XEQT",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 3
+  },
+  {
+    "Bloomberg Exchange Code": "GB",
+    "Bloomberg Composite Code": "GR",
+    "Country": "Germany",
+    "Description": "Boerse Berlin",
+    "ISO MIC": "XBER",
+    "Google Prefix": "FRA",
+    "EOD code": "BE",
+    "# of Stocks": 4
+  },
+  {
+    "Bloomberg Exchange Code": "GD",
+    "Bloomberg Composite Code": "GR",
+    "Country": "Germany",
+    "Description": "Dusseldorf Stock Exchange",
+    "ISO MIC": "XDUS",
+    "Google Prefix": "",
+    "EOD code": "DU",
+    "# of Stocks": 2
+  },
+  {
+    "Bloomberg Exchange Code": "GF",
+    "Bloomberg Composite Code": "GR",
+    "Country": "Germany",
+    "Description": "Frankfurt Stock Exchange",
+    "ISO MIC": "XFRA",
+    "Google Prefix": "FRA",
+    "EOD code": "F",
+    "# of Stocks": 171
+  },
+  {
+    "Bloomberg Exchange Code": "GH",
+    "Bloomberg Composite Code": "GR",
+    "Country": "Germany",
+    "Description": "Hamburg Stock Exchange",
+    "ISO MIC": "XHAM",
+    "Google Prefix": "",
+    "EOD code": "HM",
+    "# of Stocks": 1
+  },
+  {
+    "Bloomberg Exchange Code": "GI",
+    "Bloomberg Composite Code": "GR",
+    "Country": "Germany",
+    "Description": "Hanover Stock Exchange",
+    "ISO MIC": "XHAN",
+    "Google Prefix": "",
+    "EOD code": "HA",
+    "# of Stocks": 1
+  },
+  {
+    "Bloomberg Exchange Code": "GM",
+    "Bloomberg Composite Code": "GR",
+    "Country": "Germany",
+    "Description": "Munich Stock Exchange",
+    "ISO MIC": "XMUN",
+    "Google Prefix": "",
+    "EOD code": "MU",
+    "# of Stocks": 2
+  },
+  {
+    "Bloomberg Exchange Code": "GS",
+    "Bloomberg Composite Code": "GR",
+    "Country": "Germany",
+    "Description": "Stuttgart Stock Exchange",
+    "ISO MIC": "XSTU",
+    "Google Prefix": "",
+    "EOD code": "STU",
+    "# of Stocks": 3
+  },
+  {
+    "Bloomberg Exchange Code": "GY",
+    "Bloomberg Composite Code": "GR",
+    "Country": "Germany",
+    "Description": "Deutsche Boerse Xetra",
+    "ISO MIC": "XETR",
+    "Google Prefix": "ETR",
+    "EOD code": "XETRA",
+    "# of Stocks": 244
+  },
+  {
+    "Bloomberg Exchange Code": "QT",
+    "Bloomberg Composite Code": "GR",
+    "Country": "Germany",
+    "Description": "QUOTRIX",
+    "ISO MIC": "XQTX",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 1
+  },
+  {
+    "Bloomberg Exchange Code": "GA",
+    "Bloomberg Composite Code": "",
+    "Country": "Greece",
+    "Description": "Athens Exchange S.A. Cash Market",
+    "ISO MIC": "XATH",
+    "Google Prefix": "ATH",
+    "EOD code": "AT",
+    "# of Stocks": 32
+  },
+  {
+    "Bloomberg Exchange Code": "HK",
+    "Bloomberg Composite Code": "",
+    "Country": "Hong Kong",
+    "Description": "Hong Kong Exchange",
+    "ISO MIC": "XHKG",
+    "Google Prefix": "HKG",
+    "EOD code": "HK",
+    "# of Stocks": "1,924"
+  },
+  {
+    "Bloomberg Exchange Code": "HB",
+    "Bloomberg Composite Code": "",
+    "Country": "Hungary",
+    "Description": "Budapest Stock Exchange",
+    "ISO MIC": "XBUD",
+    "Google Prefix": "BDP",
+    "EOD code": "BUD",
+    "# of Stocks": 5
+  },
+  {
+    "Bloomberg Exchange Code": "RF",
+    "Bloomberg Composite Code": "",
+    "Country": "Iceland",
+    "Description": "First North Iceland",
+    "ISO MIC": "XICE",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 1
+  },
+  {
+    "Bloomberg Exchange Code": "IB",
+    "Bloomberg Composite Code": "IN",
+    "Country": "India",
+    "Description": "BSE LTD",
+    "ISO MIC": "XBOM",
+    "Google Prefix": "BOM",
+    "EOD code": "BSE",
+    "# of Stocks": 476
+  },
+  {
+    "Bloomberg Exchange Code": "IS",
+    "Bloomberg Composite Code": "IN",
+    "Country": "India",
+    "Description": "National Stock Exchange Of India",
+    "ISO MIC": "XNSE",
+    "Google Prefix": "NSE",
+    "EOD code": "NSE",
+    "# of Stocks": 697
+  },
+  {
+    "Bloomberg Exchange Code": "IJ",
+    "Bloomberg Composite Code": "",
+    "Country": "Indonesia",
+    "Description": "Indonesia Stock Exchange",
+    "ISO MIC": "XIDX",
+    "Google Prefix": "JAK",
+    "EOD code": "JK",
+    "# of Stocks": 152
+  },
+  {
+    "Bloomberg Exchange Code": "ID",
+    "Bloomberg Composite Code": "",
+    "Country": "Ireland",
+    "Description": "Irish Stock Exchange - All Market",
+    "ISO MIC": "XDUB",
+    "Google Prefix": "IRE",
+    "EOD code": "IR",
+    "# of Stocks": 35
+  },
+  {
+    "Bloomberg Exchange Code": "IT",
+    "Bloomberg Composite Code": "",
+    "Country": "Israel",
+    "Description": "Tel Aviv Stock Exchange",
+    "ISO MIC": "XTAE",
+    "Google Prefix": "TLV",
+    "EOD code": "TA",
+    "# of Stocks": 170
+  },
+  {
+    "Bloomberg Exchange Code": "IM",
+    "Bloomberg Composite Code": "",
+    "Country": "Italy",
+    "Description": "Borsa Italiana S.P.A.",
+    "ISO MIC": "MTAA",
+    "Google Prefix": "BIT",
+    "EOD code": "MI",
+    "# of Stocks": 152
+  },
+  {
+    "Bloomberg Exchange Code": "JT",
+    "Bloomberg Composite Code": "JP",
+    "Country": "Japan",
+    "Description": "Tokyo Stock Exchange",
+    "ISO MIC": "XTKS",
+    "Google Prefix": "TYO",
+    "EOD code": "TSE",
+    "# of Stocks": "1,764"
+  },
+  {
+    "Bloomberg Exchange Code": "JR",
+    "Bloomberg Composite Code": "",
+    "Country": "Jordan",
+    "Description": "Amman Stock Exchange",
+    "ISO MIC": "XAMM",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 5
+  },
+  {
+    "Bloomberg Exchange Code": "KN",
+    "Bloomberg Composite Code": "",
+    "Country": "Kenya",
+    "Description": "Nairobi Stock Exchange",
+    "ISO MIC": "XNAI",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 5
+  },
+  {
+    "Bloomberg Exchange Code": "KK",
+    "Bloomberg Composite Code": "",
+    "Country": "Kuwait",
+    "Description": "Kuwait Stock Exchange",
+    "ISO MIC": "XKUW",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 33
+  },
+  {
+    "Bloomberg Exchange Code": "LX",
+    "Bloomberg Composite Code": "",
+    "Country": "Luxembourg",
+    "Description": "Luxembourg Stock Exchange",
+    "ISO MIC": "XLUX",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 1
+  },
+  {
+    "Bloomberg Exchange Code": "MK",
+    "Bloomberg Composite Code": "",
+    "Country": "Malaysia",
+    "Description": "Bursa Malaysia",
+    "ISO MIC": "XKLS",
+    "Google Prefix": "KUL",
+    "EOD code": "KLSE",
+    "# of Stocks": 266
+  },
+  {
+    "Bloomberg Exchange Code": "MM",
+    "Bloomberg Composite Code": "",
+    "Country": "Mexico",
+    "Description": "Bolsa Mexicana De Valores (Mexican Stock Exchange)",
+    "ISO MIC": "XMEX",
+    "Google Prefix": "BMV",
+    "EOD code": "MX",
+    "# of Stocks": 94
+  },
+  {
+    "Bloomberg Exchange Code": "MC",
+    "Bloomberg Composite Code": "",
+    "Country": "Morocco",
+    "Description": "Casablanca Stock Exchange",
+    "ISO MIC": "XCAS",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 12
+  },
+  {
+    "Bloomberg Exchange Code": "NZ",
+    "Bloomberg Composite Code": "",
+    "Country": "New Zealand",
+    "Description": "New Zealand Exchange Ltd",
+    "ISO MIC": "XNZE",
+    "Google Prefix": "NZE",
+    "EOD code": "NZ",
+    "# of Stocks": 55
+  },
+  {
+    "Bloomberg Exchange Code": "NL",
+    "Bloomberg Composite Code": "",
+    "Country": "Nigeria",
+    "Description": "Nigerian Stock Exchange",
+    "ISO MIC": "XNSA",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 12
+  },
+  {
+    "Bloomberg Exchange Code": "NO",
+    "Bloomberg Composite Code": "",
+    "Country": "Norway",
+    "Description": "Oslo Bors Asa",
+    "ISO MIC": "XOSL",
+    "Google Prefix": "",
+    "EOD code": "OL",
+    "# of Stocks": 130
+  },
+  {
+    "Bloomberg Exchange Code": "NS",
+    "Bloomberg Composite Code": "",
+    "Country": "Norway",
+    "Description": "Norwegian OTC Market",
+    "ISO MIC": "NOTC",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 1
+  },
+  {
+    "Bloomberg Exchange Code": "OM",
+    "Bloomberg Composite Code": "",
+    "Country": "Oman",
+    "Description": "Muscat Securities Market",
+    "ISO MIC": "XMUS",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 9
+  },
+  {
+    "Bloomberg Exchange Code": "PK",
+    "Bloomberg Composite Code": "PA",
+    "Country": "Pakistan",
+    "Description": "Karachi Stock Exchange (Guarantee) Limited",
+    "ISO MIC": "XKAR",
+    "Google Prefix": "KAR",
+    "EOD code": "KAR",
+    "# of Stocks": 42
+  },
+  {
+    "Bloomberg Exchange Code": "PE",
+    "Bloomberg Composite Code": "",
+    "Country": "Peru",
+    "Description": "Bolsa De Valores De Lima",
+    "ISO MIC": "XLIM",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 24
+  },
+  {
+    "Bloomberg Exchange Code": "PM",
+    "Bloomberg Composite Code": "",
+    "Country": "Philippines",
+    "Description": "Philippine Stock Exchange Inc.",
+    "ISO MIC": "XPHS",
+    "Google Prefix": "PSE",
+    "EOD code": "PSE",
+    "# of Stocks": 76
+  },
+  {
+    "Bloomberg Exchange Code": "PW",
+    "Bloomberg Composite Code": "",
+    "Country": "Poland",
+    "Description": "Warsaw Stock Exchange/Equities/Main Market",
+    "ISO MIC": "XWAR",
+    "Google Prefix": "WSE",
+    "EOD code": "WAR",
+    "# of Stocks": 74
+  },
+  {
+    "Bloomberg Exchange Code": "PL",
+    "Bloomberg Composite Code": "",
+    "Country": "Portugal",
+    "Description": "Nyse Euronext - Euronext Lisbon",
+    "ISO MIC": "XLIS",
+    "Google Prefix": "ELI",
+    "EOD code": "LS",
+    "# of Stocks": 20
+  },
+  {
+    "Bloomberg Exchange Code": "QD",
+    "Bloomberg Composite Code": "",
+    "Country": "Qatar",
+    "Description": "Qatar Exchange",
+    "ISO MIC": "DSMD",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 35
+  },
+  {
+    "Bloomberg Exchange Code": "RE",
+    "Bloomberg Composite Code": "RO",
+    "Country": "Romania",
+    "Description": "Spot Regulated Market - Bvb",
+    "ISO MIC": "XBSE",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 8
+  },
+  {
+    "Bloomberg Exchange Code": "RX",
+    "Bloomberg Composite Code": "RM",
+    "Country": "Russia",
+    "Description": "Standard-Classica-Forts",
+    "ISO MIC": "MISX",
+    "Google Prefix": "MCX",
+    "EOD code": "MCX",
+    "# of Stocks": 71
+  },
+  {
+    "Bloomberg Exchange Code": "AB",
+    "Bloomberg Composite Code": "",
+    "Country": "Saudi Arabia",
+    "Description": "Saudi Stock Exchange",
+    "ISO MIC": "XSAU",
+    "Google Prefix": "",
+    "EOD code": "SR",
+    "# of Stocks": 165
+  },
+  {
+    "Bloomberg Exchange Code": "BC",
+    "Bloomberg Composite Code": "",
+    "Country": "Senegal",
+    "Description": "",
+    "ISO MIC": "XBRV",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 1
+  },
+  {
+    "Bloomberg Exchange Code": "SP",
+    "Bloomberg Composite Code": "",
+    "Country": "Singapore",
+    "Description": "Singapore Exchange",
+    "ISO MIC": "XSES",
+    "Google Prefix": "SGX",
+    "EOD code": "SG",
+    "# of Stocks": 256
+  },
+  {
+    "Bloomberg Exchange Code": "SV",
+    "Bloomberg Composite Code": "",
+    "Country": "Slovenia",
+    "Description": "Ljubljana Stock Exchange (Official Market)",
+    "ISO MIC": "XLJU",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 3
+  },
+  {
+    "Bloomberg Exchange Code": "SJ",
+    "Bloomberg Composite Code": "",
+    "Country": "South Africa",
+    "Description": "Johannesburg Stock Exchange",
+    "ISO MIC": "XJSE",
+    "Google Prefix": "JNB",
+    "EOD code": "JSE",
+    "# of Stocks": 169
+  },
+  {
+    "Bloomberg Exchange Code": "KP",
+    "Bloomberg Composite Code": "KS",
+    "Country": "South Korea",
+    "Description": "Korea Exchange (Stock Market)",
+    "ISO MIC": "XKRX",
+    "Google Prefix": "KRX",
+    "EOD code": "KO",
+    "# of Stocks": 461
+  },
+  {
+    "Bloomberg Exchange Code": "KQ",
+    "Bloomberg Composite Code": "KS",
+    "Country": "South Korea",
+    "Description": "Korea Exchange (Kosdaq)",
+    "ISO MIC": "XKOS",
+    "Google Prefix": "KOSDAQ",
+    "EOD code": "KQ",
+    "# of Stocks": 278
+  },
+  {
+    "Bloomberg Exchange Code": "SM",
+    "Bloomberg Composite Code": "",
+    "Country": "Spain",
+    "Description": "Bolsa De Madrid",
+    "ISO MIC": "XMAD",
+    "Google Prefix": "BME",
+    "EOD code": "MC",
+    "# of Stocks": 130
+  },
+  {
+    "Bloomberg Exchange Code": "SL",
+    "Bloomberg Composite Code": "",
+    "Country": "Sri Lanka",
+    "Description": "Colombo Stock Exchange",
+    "ISO MIC": "XCOL",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 4
+  },
+  {
+    "Bloomberg Exchange Code": "NG",
+    "Bloomberg Composite Code": "",
+    "Country": "Sweden",
+    "Description": "Nordic Growth Market",
+    "ISO MIC": "XNGM",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 1
+  },
+  {
+    "Bloomberg Exchange Code": "SS",
+    "Bloomberg Composite Code": "",
+    "Country": "Sweden",
+    "Description": "Nasdaq Omx Nordic",
+    "ISO MIC": "XSTO",
+    "Google Prefix": "STO",
+    "EOD code": "ST",
+    "# of Stocks": 355
+  },
+  {
+    "Bloomberg Exchange Code": "SE",
+    "Bloomberg Composite Code": "SW",
+    "Country": "Switzerland",
+    "Description": "Six Swiss Exchange",
+    "ISO MIC": "XSWX",
+    "Google Prefix": "SWX",
+    "EOD code": "SW",
+    "# of Stocks": 128
+  },
+  {
+    "Bloomberg Exchange Code": "VX",
+    "Bloomberg Composite Code": "SW",
+    "Country": "Switzerland",
+    "Description": "Six Swiss - Blue Chips Segment",
+    "ISO MIC": "XVTX",
+    "Google Prefix": "VTX",
+    "EOD code": "VX",
+    "# of Stocks": 31
+  },
+  {
+    "Bloomberg Exchange Code": "SY",
+    "Bloomberg Composite Code": "",
+    "Country": "Syria",
+    "Description": "Damascus Securities Exchange",
+    "ISO MIC": "XDSE",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 1
+  },
+  {
+    "Bloomberg Exchange Code": "TG",
+    "Bloomberg Composite Code": "",
+    "Country": "Taiwan",
+    "Description": "Tapei Exchange",
+    "ISO MIC": "ROCO",
+    "Google Prefix": "",
+    "EOD code": "TWO",
+    "# of Stocks": 95
+  },
+  {
+    "Bloomberg Exchange Code": "TT",
+    "Bloomberg Composite Code": "",
+    "Country": "Taiwan",
+    "Description": "Taiwan Stock Exchange",
+    "ISO MIC": "XTAI",
+    "Google Prefix": "TPE",
+    "EOD code": "TW",
+    "# of Stocks": 611
+  },
+  {
+    "Bloomberg Exchange Code": "TB",
+    "Bloomberg Composite Code": "",
+    "Country": "Thailand",
+    "Description": "Stock Exchange Of Thailand",
+    "ISO MIC": "XBKK",
+    "Google Prefix": "BAK",
+    "EOD code": "BK",
+    "# of Stocks": 377
+  },
+  {
+    "Bloomberg Exchange Code": "MT",
+    "Bloomberg Composite Code": "",
+    "Country": "The Netherlands",
+    "Description": "TOM MTF",
+    "ISO MIC": "TOMX",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 1
+  },
+  {
+    "Bloomberg Exchange Code": "NA",
+    "Bloomberg Composite Code": "",
+    "Country": "The Netherlands",
+    "Description": "Nyse Euronext - Euronext Amsterdam",
+    "ISO MIC": "XAMS",
+    "Google Prefix": "AMS",
+    "EOD code": "AS",
+    "# of Stocks": 86
+  },
+  {
+    "Bloomberg Exchange Code": "TI",
+    "Bloomberg Composite Code": "",
+    "Country": "Turkey",
+    "Description": "Istanbul Stock Exchange",
+    "ISO MIC": "XIST",
+    "Google Prefix": "IST",
+    "EOD code": "IS",
+    "# of Stocks": 92
+  },
+  {
+    "Bloomberg Exchange Code": "DB",
+    "Bloomberg Composite Code": "UH",
+    "Country": "United Arab Emirates",
+    "Description": "Dubai Financial Market",
+    "ISO MIC": "XDFM",
+    "Google Prefix": "DFM",
+    "EOD code": "",
+    "# of Stocks": 18
+  },
+  {
+    "Bloomberg Exchange Code": "DH",
+    "Bloomberg Composite Code": "UH",
+    "Country": "United Arab Emirates",
+    "Description": "Nasdaq Dubai",
+    "ISO MIC": "DIFX",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 7
+  },
+  {
+    "Bloomberg Exchange Code": "DU",
+    "Bloomberg Composite Code": "UH",
+    "Country": "United Arab Emirates",
+    "Description": "Abu Dhabi Securities Exchange",
+    "ISO MIC": "XADS",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 16
+  },
+  {
+    "Bloomberg Exchange Code": "EB",
+    "Bloomberg Composite Code": "",
+    "Country": "United Kingdom",
+    "Description": "BATS Trading Europe",
+    "ISO MIC": "BATE",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 2
+  },
+  {
+    "Bloomberg Exchange Code": "IX",
+    "Bloomberg Composite Code": "",
+    "Country": "United Kingdom",
+    "Description": "Chi-X Eruope",
+    "ISO MIC": "CHIX",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 2
+  },
+  {
+    "Bloomberg Exchange Code": "LI",
+    "Bloomberg Composite Code": "",
+    "Country": "United Kingdom",
+    "Description": "London Stock Exchange International",
+    "ISO MIC": "",
+    "Google Prefix": "LON",
+    "EOD code": "IL",
+    "# of Stocks": 39
+  },
+  {
+    "Bloomberg Exchange Code": "LN",
+    "Bloomberg Composite Code": "",
+    "Country": "United Kingdom",
+    "Description": "London Stock Exchange",
+    "ISO MIC": "XLON",
+    "Google Prefix": "LON",
+    "EOD code": "LSE",
+    "# of Stocks": 629
+  },
+  {
+    "Bloomberg Exchange Code": "PO",
+    "Bloomberg Composite Code": "",
+    "Country": "United Kingdom",
+    "Description": "ITG Posit",
+    "ISO MIC": "XPOS",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 1
+  },
+  {
+    "Bloomberg Exchange Code": "TQ",
+    "Bloomberg Composite Code": "",
+    "Country": "United Kingdom",
+    "Description": "Turquoise",
+    "ISO MIC": "TRQX",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 3
+  },
+  {
+    "Bloomberg Exchange Code": "XB",
+    "Bloomberg Composite Code": "",
+    "Country": "United Kingdom",
+    "Description": "Cinnober BOAT",
+    "ISO MIC": "BOAT",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 1
+  },
+  {
+    "Bloomberg Exchange Code": "UA",
+    "Bloomberg Composite Code": "US",
+    "Country": "USA",
+    "Description": "NYSE American",
+    "ISO MIC": "XASE",
+    "Google Prefix": "NYSEAMERICAN",
+    "EOD code": "US",
+    "# of Stocks": 272
+  },
+  {
+    "Bloomberg Exchange Code": "UF",
+    "Bloomberg Composite Code": "US",
+    "Country": "USA",
+    "Description": "CBOE BATS BZX",
+    "ISO MIC": "BATS",
+    "Google Prefix": "BATS",
+    "EOD code": "US",
+    "# of Stocks": 1
+  },
+  {
+    "Bloomberg Exchange Code": "UN",
+    "Bloomberg Composite Code": "US",
+    "Country": "USA",
+    "Description": "New York Stock Exchange",
+    "ISO MIC": "XNYS",
+    "Google Prefix": "NYSE",
+    "EOD code": "US",
+    "# of Stocks": "3,350"
+  },
+  {
+    "Bloomberg Exchange Code": "UP",
+    "Bloomberg Composite Code": "US",
+    "Country": "USA",
+    "Description": "NYSE Arca",
+    "ISO MIC": "ARCX",
+    "Google Prefix": "NYSEARCA",
+    "EOD code": "US",
+    "# of Stocks": 3
+  },
+  {
+    "Bloomberg Exchange Code": "UQ",
+    "Bloomberg Composite Code": "US",
+    "Country": "USA",
+    "Description": "NASDAQ Global Market",
+    "ISO MIC": "XNMS",
+    "Google Prefix": "NASDAQ",
+    "EOD code": "US",
+    "# of Stocks": "1,241"
+  },
+  {
+    "Bloomberg Exchange Code": "UR",
+    "Bloomberg Composite Code": "US",
+    "Country": "USA",
+    "Description": "NASDAQ Capital Market",
+    "ISO MIC": "XNCM",
+    "Google Prefix": "NASDAQ",
+    "EOD code": "US",
+    "# of Stocks": "2,219"
+  },
+  {
+    "Bloomberg Exchange Code": "UV",
+    "Bloomberg Composite Code": "US",
+    "Country": "USA",
+    "Description": "OTC markets",
+    "ISO MIC": "OOTC",
+    "Google Prefix": "OTCMKTS",
+    "EOD code": "US",
+    "# of Stocks": "2,491"
+  },
+  {
+    "Bloomberg Exchange Code": "UW",
+    "Bloomberg Composite Code": "US",
+    "Country": "USA",
+    "Description": "NASDAQ Global Select",
+    "ISO MIC": "XNGS",
+    "Google Prefix": "NASDAQ",
+    "EOD code": "US",
+    "# of Stocks": "1,796"
+  },
+  {
+    "Bloomberg Exchange Code": "VH",
+    "Bloomberg Composite Code": "VN",
+    "Country": "Vietnam",
+    "Description": "Hanoi Stock Exchange",
+    "ISO MIC": "HSTC",
+    "Google Prefix": "",
+    "EOD code": "",
+    "# of Stocks": 4
+  },
+  {
+    "Bloomberg Exchange Code": "VM",
+    "Bloomberg Composite Code": "VN",
+    "Country": "Vietnam",
+    "Description": "Hochiminh Stock Exchange",
+    "ISO MIC": "XSTC",
+    "Google Prefix": "",
+    "EOD code": "VN",
+    "# of Stocks": 58
+  }
+]
